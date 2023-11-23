@@ -54,12 +54,18 @@ public class DomineeGame {
 
                 // Draw the domino at the current mouse position with 50% opacity
                 if (currentPoint != null && !dominoPlaced && currentPoint.y < 7) {
-                    if (currentDominoOrientation) {
-                        g.setColor(new Color(242, 203, 255)); // 50% opacity purple
-                        g.fillRect(currentPoint.x * 64, currentPoint.y * 64, 128, 64);
-                    } else {
-                        g.setColor(new Color(197, 228, 255)); // 50% opacity blue
-                        g.fillRect(currentPoint.x * 64, currentPoint.y * 64, 64, 128);    
+                    int dominoWidth = currentDominoOrientation ? 128 : 64;
+                    int dominoHeight = currentDominoOrientation ? 64 : 128;
+
+                    // Check if the domino will fit within the board boundaries
+                    if (currentPoint.x + (dominoWidth / 64) <= 8) {
+                        if (currentDominoOrientation) {
+                            g.setColor(new Color(242, 203, 255)); // 50% opacity purple
+                            g.fillRect(currentPoint.x * 64, currentPoint.y * 64, dominoWidth, dominoHeight);
+                        } else {
+                            g.setColor(new Color(197, 228, 255)); // 50% opacity blue
+                            g.fillRect(currentPoint.x * 64, currentPoint.y * 64, dominoWidth, dominoHeight);
+                        }
                     }
                 }
             }
@@ -85,29 +91,25 @@ public class DomineeGame {
             public void mouseClicked(MouseEvent e) {
                 if (currentPoint.y < 7) {
                     // Place the domino with the current orientation
-                    
-                    if (currentDominoOrientation) {
-                        placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, new Color(192, 0, 255)));
-                    } else {
-                        placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, new Color(0, 135, 255)));  
+                    int dominoWidth = currentDominoOrientation ? 128 : 64;
+                    int dominoHeight = currentDominoOrientation ? 64 : 128;
+
+                    // Check if the domino will fit within the board boundaries
+                    if (currentPoint.x + (dominoWidth / 64) <= 8) {
+                        placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, getColorForCurrentDomino()));
+
+                        // Change l'orientation du domino survolé
+                        currentDominoOrientation = !currentDominoOrientation;
+
+                        chessboardPanel.repaint();
                     }
-
-                    // Change l'orientation du domino survolé
-                    currentDominoOrientation = !currentDominoOrientation;
-
-                    chessboardPanel.repaint();
                 }
             }
         });
     }
 
-    private boolean isHorizontalDominoAt(int x, int y) {
-        for (Domino domino : placedDominos) {
-            if (domino.isHorizontal() && domino.getX() == x && domino.getY() == y) {
-                return true;
-            }
-        }
-        return false;
+    private Color getColorForCurrentDomino() {
+        return currentDominoOrientation ? new Color(192, 0, 255) : new Color(0, 135, 255);
     }
 
     public static void main(String[] args) {
