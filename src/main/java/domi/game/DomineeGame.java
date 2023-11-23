@@ -1,4 +1,5 @@
 package domi.game;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -6,10 +7,12 @@ import java.util.List;
 import javax.swing.*;
 
 public class DomineeGame {
+
     private JPanel chessboardPanel;
     private Point currentPoint;
     private boolean dominoPlaced;
     private List<Domino> placedDominos;
+    private boolean currentDominoOrientation = true; // Par défaut, vertical
 
     public DomineeGame() {
         initializeChessboardPanel();
@@ -51,14 +54,13 @@ public class DomineeGame {
 
                 // Draw the domino at the current mouse position with 50% opacity
                 if (currentPoint != null && !dominoPlaced && currentPoint.y < 7) {
-                    g.setColor(new Color(0, 0, 255, 127)); // 50% opacity blue
-                    g.fillRect(currentPoint.x * 64, currentPoint.y * 64, 64, 128);
-                }
-
-                // Draw the domino at the current mouse position with 100% opacity
-                if (currentPoint != null && dominoPlaced && currentPoint.y < 7) {
-                    g.setColor(new Color(0, 0, 255)); // 100% opacity blue
-                    g.fillRect(currentPoint.x * 64, currentPoint.y * 64, 64, 128);
+                    if (currentDominoOrientation) {
+                        g.setColor(new Color(242, 203, 255)); // 50% opacity purple
+                        g.fillRect(currentPoint.x * 64, currentPoint.y * 64, 128, 64);
+                    } else {
+                        g.setColor(new Color(197, 228, 255)); // 50% opacity blue
+                        g.fillRect(currentPoint.x * 64, currentPoint.y * 64, 64, 128);    
+                    }
                 }
             }
         };
@@ -81,15 +83,18 @@ public class DomineeGame {
         chessboardPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (currentPoint.y < 7 && !dominoPlaced) {
-                    // Place the vertical domino
-                    placedDominos.add(new Domino(currentPoint.x, currentPoint.y, false, new Color(0, 0, 255)));
-                    dominoPlaced = true;
-                    chessboardPanel.repaint();
-                } else if (currentPoint.y < 7 && dominoPlaced && !isHorizontalDominoAt(currentPoint.x, currentPoint.y)) {
-                    // Place the horizontal domino if there is no horizontal domino at the current location
-                    placedDominos.add(new Domino(currentPoint.x, currentPoint.y, true, new Color(128, 0, 128)));
-                    dominoPlaced = false;
+                if (currentPoint.y < 7) {
+                    // Place the domino with the current orientation
+                    
+                    if (currentDominoOrientation) {
+                        placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, new Color(192, 0, 255)));
+                    } else {
+                        placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, new Color(0, 135, 255)));  
+                    }
+
+                    // Change l'orientation du domino survolé
+                    currentDominoOrientation = !currentDominoOrientation;
+
                     chessboardPanel.repaint();
                 }
             }
@@ -119,6 +124,7 @@ public class DomineeGame {
 }
 
 class Domino {
+
     private int x;
     private int y;
     private boolean horizontal;
