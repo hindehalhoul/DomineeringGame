@@ -18,4 +18,11 @@ public class DomineeringMove extends Move {
         this.col = col;
         this.orientation = orientation;
     }
+    public DomineeringMove(DomineeringPosition position) {
+        // Extract row, col, and orientation from the DomineeringPosition or adjust as needed
+        // For example, you might use the position's state to determine these values
+        this.row = 0; // Replace with the appropriate value
+        this.col = 0; // Replace with the appropriate value
+        this.orientation = "H"; // Replace with the appropriate value
+    }
 }

@@ -10,63 +10,124 @@ public abstract class GameSearch {
      * Note: the abstract Position also needs to be
      *       subclassed to write a new game program.
      */
-    /*
+ /*
      * Note: the abstract class Move also needs to be subclassed.
      *       
      */
-
     public static boolean PROGRAM = false;
     public static boolean HUMAN = true;
 
     /**
-     *  Notes:  PROGRAM false -1,  HUMAN true 1
+     * Notes: PROGRAM false -1, HUMAN true 1
      */
 
     /*
      * Abstract methods:
      */
-
     public abstract boolean drawnPosition(Position p);
+
     public abstract boolean wonPosition(Position p, boolean player);
+
     public abstract float positionEvaluation(Position p, boolean player);
+
     public abstract void printPosition(Position p);
-    public abstract Position [] possibleMoves(Position p, boolean player);
+
+    public abstract Position[] possibleMoves(Position p, boolean player);
+
     public abstract Position makeMove(Position p, boolean player, Move move);
+
     public abstract boolean reachedMaxDepth(Position p, int depth);
+
     public abstract Move createMove();
+
+    // new
+    public abstract Move getBestMove(Position p, boolean player);
+
+    public abstract boolean gameOver(Position p);
 
     /*
      * Search utility methods:
      */
+//    protected Vector alphaBeta(int depth, Position p, boolean player) {
+//        Vector v = alphaBetaHelper(depth, p, player, 1000000.0f, -1000000.0f);
+//        //System.out.println("^^ v(0): " + v.elementAt(0) + ", v(1): " + v.elementAt(1));
+//        return v;
+//    }
+    protected Vector<Object> alphaBeta(int depth, Position p, boolean player) {
+        System.out.println("AlphaBeta called with depth " + depth + " and position " + p);
 
-    protected Vector alphaBeta(int depth, Position p, boolean player) {
-        Vector v = alphaBetaHelper(depth, p, player, 1000000.0f, -1000000.0f);
-        //System.out.println("^^ v(0): " + v.elementAt(0) + ", v(1): " + v.elementAt(1));
-        return v;
+        if (reachedMaxDepth(p, depth) || gameOver(p)) {
+            Vector<Object> result = new Vector<>();
+            result.addElement(positionEvaluation(p, player));
+            result.addElement(null); // Initialize the best move as null
+            return result;
+        }
+
+        Position[] possibleMoves = possibleMoves(p, player);
+
+        System.out.println("Possible moves: " + Arrays.toString(possibleMoves));
+
+        Vector<Object> bestMove = new Vector<>();
+        if (player) {
+            bestMove.addElement(Float.NEGATIVE_INFINITY); // initialize to negative infinity
+            for (Position move : possibleMoves) {
+                Vector<Float> val = alphaBetaHelper(depth + 1, move, false, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+                float eval = val.elementAt(0);
+
+                if (eval > (float) bestMove.elementAt(0)) {
+                    bestMove.clear();
+                    bestMove.addElement(eval);
+                    bestMove.addElement(depth == 0 ? move : null);
+                }
+            }
+        } else {
+            bestMove.addElement(Float.POSITIVE_INFINITY); // initialize to positive infinity
+            for (Position move : possibleMoves) {
+                Vector<Float> val = alphaBetaHelper(depth + 1, move, true, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+                float eval = val.elementAt(0);
+
+                if (eval < (float) bestMove.elementAt(0)) {
+                    bestMove.clear();
+                    bestMove.addElement(eval);
+                    bestMove.addElement(depth == 0 ? move : null);
+                }
+// Add these print statements
+                System.out.println("Eval: " + eval);
+                System.out.println("Best move: " + bestMove);
+            }
+        }
+
+        System.out.println("Returning best move: " + bestMove);
+
+        return bestMove;
     }
 
     protected Vector alphaBetaHelper(int depth, Position p,
-                                     boolean player, float alpha, float beta) {
-        if (GameSearch.DEBUG) System.out.println("alphaBetaHelper("+depth+","+p+","+alpha+","+beta+")");
+            boolean player, float alpha, float beta) {
+        if (GameSearch.DEBUG) {
+            System.out.println("alphaBetaHelper(" + depth + "," + p + "," + alpha + "," + beta + ")");
+        }
         if (reachedMaxDepth(p, depth)) {
             Vector v = new Vector(2);
             float value = positionEvaluation(p, player);
             v.addElement(new Float(value));
             v.addElement(null);
-            if(GameSearch.DEBUG) {
-                System.out.println(" alphaBetaHelper: mx depth at " + depth+
-                                   ", value="+value);
+            if (GameSearch.DEBUG) {
+                System.out.println(" alphaBetaHelper: mx depth at " + depth
+                        + ", value=" + value);
             }
             return v;
         }
         Vector best = new Vector();
-        Position [] moves = possibleMoves(p, player);
-        for (int i=0; i<moves.length; i++) {
+        Position[] moves = possibleMoves(p, player);
+        for (int i = 0; i < moves.length; i++) {
             Vector v2 = alphaBetaHelper(depth + 1, moves[i], !player, -beta, -alpha);
             //  if (v2 == null || v2.size() < 1) continue;
-            float value = -((Float)v2.elementAt(0)).floatValue();
+            float value = -((Float) v2.elementAt(0)).floatValue();
             if (value > beta) {
-                if(GameSearch.DEBUG) System.out.println(" ! ! ! value="+value+", beta="+beta);
+                if (GameSearch.DEBUG) {
+                    System.out.println(" ! ! ! value=" + value + ", beta=" + beta);
+                }
                 beta = value;
                 best = new Vector();
                 best.addElement(moves[i]);
@@ -74,13 +135,14 @@ public abstract class GameSearch {
                 enum2.nextElement(); // skip previous value
                 while (enum2.hasMoreElements()) {
                     Object o = enum2.nextElement();
-                    if (o != null) best.addElement(o);
+                    if (o != null) {
+                        best.addElement(o);
+                    }
                 }
             }
             /**
-             * Use the alpha-beta cutoff test to abort search if we
-             * found a move that proves that the previous move in the
-             * move chain was dubious
+             * Use the alpha-beta cutoff test to abort search if we found a move
+             * that proves that the previous move in the move chain was dubious
              */
             if (beta >= alpha) {
                 break;
@@ -94,59 +156,60 @@ public abstract class GameSearch {
         }
         return v3;
     }
+
     public void playGame(Position startingPosition, boolean humanPlayFirst) {
         if (humanPlayFirst == false) {
             System.out.print("\nYour move1:");
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
-            startingPosition = (Position)v.elementAt(1);
+            startingPosition = (Position) v.elementAt(1);
         }
         while (true) {
-    printPosition(startingPosition);
-     System.out.print("\nYour move2:");
-    if (wonPosition(startingPosition, PROGRAM)) {
-        System.out.println("Program won");
-        break;
-    }
+            printPosition(startingPosition);
+            System.out.print("\nYour move2:");
+            if (wonPosition(startingPosition, PROGRAM)) {
+                System.out.println("Program won");
+                break;
+            }
 
-    if (wonPosition(startingPosition, HUMAN)) {
-        System.out.println("Human won");
-        break;
-    }
+            if (wonPosition(startingPosition, HUMAN)) {
+                System.out.println("Human won");
+                break;
+            }
 
-    if (drawnPosition(startingPosition)) {
-        System.out.println("Drawn game");
-        break;
-    }
+            if (drawnPosition(startingPosition)) {
+                System.out.println("Drawn game");
+                break;
+            }
 
-    System.out.print("\nYour move:");
-    Move move = createMove();
-    startingPosition = makeMove(startingPosition, HUMAN, move);
-    printPosition(startingPosition);
+            System.out.print("\nYour move:");
+            Move move = createMove();
+            startingPosition = makeMove(startingPosition, HUMAN, move);
+            printPosition(startingPosition);
 
-    if (wonPosition(startingPosition, HUMAN)) {
-        System.out.println("Human won");
-        break;
-    }
-   System.out.print("\nYour move3:");
-    Vector v = alphaBeta(0, startingPosition, PROGRAM);
+            if (wonPosition(startingPosition, HUMAN)) {
+                System.out.println("Human won");
+                break;
+            }
+            System.out.print("\nYour move3:");
+            Vector v = alphaBeta(0, startingPosition, PROGRAM);
 
-    Enumeration enum2 = v.elements();
-    while (enum2.hasMoreElements()) {
-        System.out.println(" next element: " + enum2.nextElement());
-    }
+            Enumeration enum2 = v.elements();
+            while (enum2.hasMoreElements()) {
+                System.out.println(" next element: " + enum2.nextElement());
+            }
 
-    startingPosition = (Position) v.elementAt(1);
+            startingPosition = (Position) v.elementAt(1);
 
-    if (wonPosition(startingPosition, PROGRAM)) {
-        System.out.println("Program won");
-        break;
-    }
+            if (wonPosition(startingPosition, PROGRAM)) {
+                System.out.println("Program won");
+                break;
+            }
 
-    if (drawnPosition(startingPosition)) {
-        System.out.println("Drawn game");
-        break;
-    }
-}
+            if (drawnPosition(startingPosition)) {
+                System.out.println("Drawn game");
+                break;
+            }
+        }
 
     }
 }
