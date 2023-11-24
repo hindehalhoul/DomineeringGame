@@ -96,7 +96,7 @@ public class DomineeGame {
                     // Check if the domino will fit within the board boundaries
                     if (currentPoint.x + (dominoWidth / 64) <= 8) {
                         // Check if the selected position is already occupied by another domino
-                        if (!isPositionOccupied(currentPoint.x, currentPoint.y, currentDominoOrientation)) {
+                        if (!isPositionOccupied(currentPoint.x, currentPoint.y)) {
                             placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, getColorForCurrentDomino()));
                             currentDominoOrientation = !currentDominoOrientation;
                             chessboardPanel.repaint();
@@ -105,19 +105,17 @@ public class DomineeGame {
                 }
             }
 
-// Add this method to check if a position is occupied by another domino
-            private boolean isPositionOccupied(int x, int y, boolean horizontal) {
+            private boolean isPositionOccupied(int x, int y) {
                 for (Domino domino : placedDominos) {
-                    if (horizontal) {
-                        if (domino.getX() <= x && x < domino.getX() + 2 && domino.getY() == y) {
-                            System.out.println("Place ocuppied HORIZONTAL");
-                            return true; // Position occupied
-                        }
-                    } else {
-                        if (domino.getX() == x && domino.getY() <= y && y < domino.getY() + 2) {
-                            System.out.println("Place ocuppied VERTICAL");
-                            return true; // Position occupied
-                        }
+                    // Check for horizontal placement
+                    if (domino.getX() <= x && x < domino.getX() + 1 && domino.getY() == y) {
+                        System.out.println("Place occupied HORIZONTAL");
+                        return true; // Position occupied
+                    }
+                    // Check for vertical placement
+                    if (domino.getX() == x && domino.getY() <= y && y < domino.getY() + 1) {
+                        System.out.println("Place occupied VERTICAL");
+                        return true; // Position occupied
                     }
                 }
                 return false; // Position not occupied
