@@ -1,7 +1,10 @@
+package domi_interface;
+
 
 import domi.game.DomineeGame;
 import java.awt.*;
 import javax.swing.*;
+import domi.game.DomineeringPosition;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -12,18 +15,24 @@ import javax.swing.*;
  *
  * @author ASUS
  */
-public class domineering extends javax.swing.JFrame {
+public class Domineering extends javax.swing.JFrame {
 
-        private DomineeGame domineeGame; // Instance of DomineeGame
+        private DomineeGame domineeGame; 
+        private DomineeringPosition currentPosition;// Instance of DomineeGame
 
     /**
      * Creates new form domineering
      */
-    public domineering() {
+    public Domineering() {
         initComponents();
         domineeGame = new DomineeGame(); // Initialize DomineeGame
         displayChessboard(); // Display the chessboard
     }
+    public DomineeringPosition getCurrentPosition() {
+    
+    return currentPosition;
+}
+
     
     private void displayChessboard() {
         // Get the content pane of the frame
@@ -257,20 +266,21 @@ public class domineering extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Domineering.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new domineering().setVisible(true);
+                new Domineering().setVisible(true);
             }
         });
     }
