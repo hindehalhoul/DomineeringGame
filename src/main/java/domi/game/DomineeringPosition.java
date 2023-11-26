@@ -1,7 +1,7 @@
 package domi.game;
 
 public class DomineeringPosition extends Position implements Cloneable {
-    int[][] board;
+    private int[][] board;
 
     public DomineeringPosition(int rows, int cols) {
         board = new int[rows][cols];
@@ -11,7 +11,7 @@ public class DomineeringPosition extends Position implements Cloneable {
         return board;
     }
 
-    // Ajout des méthodes getRows et getCols
+    // Add the methods getRows and getCols
     public int getRows() {
         return board.length;
     }
@@ -20,7 +20,7 @@ public class DomineeringPosition extends Position implements Cloneable {
         return board[0].length;
     }
 
-    // Implémentation de la méthode clone
+    // Implementation of the clone method
     @Override
     public DomineeringPosition clone() {
         DomineeringPosition clonedPosition = new DomineeringPosition(getRows(), getCols());
@@ -31,4 +31,20 @@ public class DomineeringPosition extends Position implements Cloneable {
 
         return clonedPosition;
     }
+    
+    @Override
+public String toString() {
+    StringBuilder sb = new StringBuilder();
+    int[][] board = getBoard();
+
+    for (int i = 0; i < board.length; i++) {
+        for (int j = 0; j < board[i].length; j++) {
+            sb.append(board[i][j]).append(" ");
+        }
+        sb.append("\n");
+    }
+
+    return sb.toString();
+}
+
 }

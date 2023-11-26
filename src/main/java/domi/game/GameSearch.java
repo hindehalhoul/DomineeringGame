@@ -53,163 +53,113 @@ public abstract class GameSearch {
 //        //System.out.println("^^ v(0): " + v.elementAt(0) + ", v(1): " + v.elementAt(1));
 //        return v;
 //    }
-    protected Vector<Object> alphaBeta(int depth, Position p, boolean player) {
-        System.out.println("AlphaBeta called with depth " + depth + " and position " + p);
-
-        if (reachedMaxDepth(p, depth) || gameOver(p)) {
-            Vector<Object> result = new Vector<>();
-            result.addElement(positionEvaluation(p, player));
-            result.addElement(null); // Initialize the best move as null
-            return result;
-        }
-
-        Position[] possibleMoves = possibleMoves(p, player);
-
-        System.out.println("Possible moves: " + Arrays.toString(possibleMoves));
-
-        Vector<Object> bestMove = new Vector<>();
-        if (player) {
-            bestMove.addElement(Float.NEGATIVE_INFINITY); // initialize to negative infinity
-            for (Position move : possibleMoves) {
-                Vector<Float> val = alphaBetaHelper(depth + 1, move, false, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
-                float eval = val.elementAt(0);
-
-                if (eval > (float) bestMove.elementAt(0)) {
-                    bestMove.clear();
-                    bestMove.addElement(eval);
-                    bestMove.addElement(depth == 0 ? move : null);
-                }
-            }
-        } else {
-            bestMove.addElement(Float.POSITIVE_INFINITY); // initialize to positive infinity
-            for (Position move : possibleMoves) {
-                Vector<Float> val = alphaBetaHelper(depth + 1, move, true, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
-                float eval = val.elementAt(0);
-
-                if (eval < (float) bestMove.elementAt(0)) {
-                    bestMove.clear();
-                    bestMove.addElement(eval);
-                    bestMove.addElement(depth == 0 ? move : null);
-                }
-// Add these print statements
-                System.out.println("Eval: " + eval);
-                System.out.println("Best move: " + bestMove);
-            }
-        }
-
-        System.out.println("Returning best move: " + bestMove);
-
-        return bestMove;
+    protected Vector alphaBeta(int depth, Position p, boolean player) {
+        Vector v = alphaBetaHelper(depth, p, player, 1000000.0f, -1000000.0f);
+        //System.out.println("^^ v(0): " + v.elementAt(0) + ", v(1): " + v.elementAt(1));
+        return v;
     }
-
+    
+    
+    
     protected Vector alphaBetaHelper(int depth, Position p,
-            boolean player, float alpha, float beta) {
-        if (GameSearch.DEBUG) {
-            System.out.println("alphaBetaHelper(" + depth + "," + p + "," + alpha + "," + beta + ")");
-        }
-        if (reachedMaxDepth(p, depth)) {
-            Vector v = new Vector(2);
-            float value = positionEvaluation(p, player);
-            v.addElement(new Float(value));
-            v.addElement(null);
-            if (GameSearch.DEBUG) {
-                System.out.println(" alphaBetaHelper: mx depth at " + depth
-                        + ", value=" + value);
-            }
-            return v;
-        }
-        Vector best = new Vector();
-        Position[] moves = possibleMoves(p, player);
-        for (int i = 0; i < moves.length; i++) {
-            Vector v2 = alphaBetaHelper(depth + 1, moves[i], !player, -beta, -alpha);
-            //  if (v2 == null || v2.size() < 1) continue;
-            float value = -((Float) v2.elementAt(0)).floatValue();
-            if (value > beta) {
-                if (GameSearch.DEBUG) {
-                    System.out.println(" ! ! ! value=" + value + ", beta=" + beta);
-                }
-                beta = value;
-                best = new Vector();
-                best.addElement(moves[i]);
-                Enumeration enum2 = v2.elements();
-                enum2.nextElement(); // skip previous value
-                while (enum2.hasMoreElements()) {
-                    Object o = enum2.nextElement();
-                    if (o != null) {
-                        best.addElement(o);
-                    }
-                }
-            }
-            /**
-             * Use the alpha-beta cutoff test to abort search if we found a move
-             * that proves that the previous move in the move chain was dubious
-             */
-            if (beta >= alpha) {
-                break;
-            }
-        }
-        Vector v3 = new Vector();
-        v3.addElement(new Float(beta));
-        Enumeration enum2 = best.elements();
-        while (enum2.hasMoreElements()) {
-            v3.addElement(enum2.nextElement());
-        }
-        return v3;
+        boolean player, float alpha, float beta) {
+    if (GameSearch.DEBUG) {
+        System.out.println("alphaBetaHelper(" + depth + "," + p + "," + alpha + "," + beta + ")");
     }
+    if (reachedMaxDepth(p, depth)) {
+        Vector v = new Vector(2);
+        float value = positionEvaluation(p, player);
+        v.addElement(new Float(value));
+        v.addElement(null);
+        if (GameSearch.DEBUG) {
+            System.out.println(" alphaBetaHelper: mx depth at " + depth
+                    + ", value=" + value);
+        }
+        return v;
+    }
+//    Vector best = new Vector();
+    Position[] moves = possibleMoves(p, player);
+    Vector best = new Vector();
+if (moves.length > 0) {
+    best.addElement(moves[0]);
+    Vector v2 = alphaBetaHelper(depth + 1, moves[0], !player, -beta, -alpha);
+    float value = -((Float) v2.elementAt(0)).floatValue();
+    beta = value;
+}
+for (int i = 1; i < moves.length; i++) {
+    // rest of your code
+}
+
+    for (int i = 0; i < moves.length; i++) {
+        Vector v2 = alphaBetaHelper(depth + 1, moves[i], !player, -beta, -alpha);
+        float value = -((Float) v2.elementAt(0)).floatValue();
+        if (value > beta) {
+            if (GameSearch.DEBUG) {
+                System.out.println(" ! ! ! value=" + value + ", beta=" + beta + ", move=" + moves[i]);
+            }
+            beta = value;
+            best = new Vector();
+            best.addElement(moves[i]);
+            Enumeration enum2 = v2.elements();
+            enum2.nextElement(); // skip previous value
+            while (enum2.hasMoreElements()) {
+                Object o = enum2.nextElement();
+                if (o != null) {
+                    best.addElement(o);
+                }
+            }
+        }
+        if (beta >= alpha) {
+            break;
+        }
+    }
+    Vector v3 = new Vector();
+    v3.addElement(new Float(beta));
+    Enumeration enum2 = best.elements();
+    while (enum2.hasMoreElements()) {
+        v3.addElement(enum2.nextElement());
+    }
+    return v3;
+}
+
 
     public void playGame(Position startingPosition, boolean humanPlayFirst) {
         if (humanPlayFirst == false) {
-            System.out.print("\nYour move1:");
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
             startingPosition = (Position) v.elementAt(1);
         }
         while (true) {
             printPosition(startingPosition);
-            System.out.print("\nYour move2:");
             if (wonPosition(startingPosition, PROGRAM)) {
                 System.out.println("Program won");
                 break;
             }
-
             if (wonPosition(startingPosition, HUMAN)) {
                 System.out.println("Human won");
                 break;
             }
-
             if (drawnPosition(startingPosition)) {
                 System.out.println("Drawn game");
                 break;
             }
-
             System.out.print("\nYour move:");
             Move move = createMove();
             startingPosition = makeMove(startingPosition, HUMAN, move);
             printPosition(startingPosition);
-
             if (wonPosition(startingPosition, HUMAN)) {
                 System.out.println("Human won");
                 break;
             }
-            System.out.print("\nYour move3:");
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
-
             Enumeration enum2 = v.elements();
             while (enum2.hasMoreElements()) {
                 System.out.println(" next element: " + enum2.nextElement());
             }
-
             startingPosition = (Position) v.elementAt(1);
-
-            if (wonPosition(startingPosition, PROGRAM)) {
-                System.out.println("Program won");
-                break;
-            }
-
-            if (drawnPosition(startingPosition)) {
+            if (startingPosition == null) {
                 System.out.println("Drawn game");
                 break;
             }
         }
-
     }
 }

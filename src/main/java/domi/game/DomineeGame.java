@@ -6,10 +6,13 @@ import java.awt.*;
 
 public class DomineeGame extends GameSearch {
 
-    private JPanel chessboardPanel;  // Ajoutez cette ligne
+    private JPanel chessboardPanel;
 
     public JPanel getChessboardPanel() {
         return chessboardPanel;
+    }
+
+    public DomineeGame() {
     }
 
     @Override
@@ -50,16 +53,9 @@ public class DomineeGame extends GameSearch {
                 }
             }
         }
-
-        // Aucun mouvement valide pour le joueur actuel, l'autre joueur gagne
         return true;
     }
 
-//    @Override
-//    public float positionEvaluation(Position p, boolean player) {
-//        // Évaluation de la position
-//        return 0.0f;
-//    }
     @Override
     public float positionEvaluation(Position p, boolean player) {
         if (p instanceof DomineeringPosition) {
@@ -183,8 +179,6 @@ public class DomineeGame extends GameSearch {
     }
 
     private boolean isValidMove(DomineeringPosition position, DomineeringMove move) {
-        // Ajoutez ici la logique pour vérifier si le mouvement est valide
-        // Par exemple, assurez-vous que les cases sont vides avant de placer une pièce.
         int row = move.row;
         int col = move.col;
 
@@ -201,43 +195,66 @@ public class DomineeGame extends GameSearch {
 
     @Override
     public boolean reachedMaxDepth(Position p, int depth) {
-        // Vérification de la profondeur maximale
-        // Tu peux ajuster la condition en fonction de la logique spécifique au jeu
-
-        // Dans l'exemple ci-dessous, on limite la profondeur à 10
-        if (depth >= 10) {
+        if (depth >= 5) {
             return true;
         }
-
-        // Tu peux également ajouter d'autres conditions spécifiques au jeu si nécessaire
-        // Par exemple, si la partie est déjà gagnée, tu pourrais vouloir limiter la recherche
         return false;
     }
 
-////// new fct 
+////// new fct
     @Override
-    public Move getBestMove(Position p, boolean player) {
-        Vector<Object> v = alphaBeta(0, p, player);
+public Move getBestMove(Position p, boolean player) {
+    Vector<Object> v = alphaBeta(0, p, player);
 
-        Position[] moves = possibleMoves(p, player);
+    Position[] moves = possibleMoves(p, player);
 
-        System.out.println("Possible moves: " + Arrays.toString(moves));
-
-        if (v != null && v.size() > 1) {
-            Position bestMove = (Position) v.elementAt(1);
-
-            System.out.println("Best move: " + bestMove);
-
-            for (Position move : moves) {
-                if (move.equals(bestMove)) {
-                    return new DomineeringMove((DomineeringPosition) move);
-                }
-            }
-        }
-
-        return null;
+    System.out.println("Possible moves:");
+    for (Position move : moves) {
+        float eval = positionEvaluation(move, player);
+        System.out.println("Move: \n" + move.toString() + ", Evaluation: " + eval);
     }
 
+    if (v != null && v.size() > 1) {
+        Position bestMove = (Position) v.elementAt(1);
+
+        if (bestMove != null) {
+            System.out.println("Best move: \n" + bestMove.toString());
+
+            // Check if the best move is in the list of possible moves
+            boolean isValidBestMove = false;
+            for (Position move : moves) {
+                if (move != null && move.equals(bestMove)) {
+                    isValidBestMove = true;
+                    break;
+                }
+            }
+
+            if (!isValidBestMove) {
+                System.out.println("Invalid best move.");
+                return null;
+            }
+
+            // Check if the best move is null before creating a DomineeringMove
+            if (bestMove instanceof DomineeringPosition) {
+                // Find the corresponding DomineeringMove
+                for (Position move : moves) {
+                    if (move != null && move.equals(bestMove)) {
+                        return new DomineeringMove((DomineeringPosition) move);
+                    }
+                }
+            }
+        } else {
+            System.out.println("Best move is null.");
+        }
+    }
+
+    return null;
+}
+
+
+
+
+    @Override
     public boolean gameOver(Position p) {
         return wonPosition(p, true) || wonPosition(p, false) || drawnPosition(p);
     }
@@ -281,7 +298,13 @@ public class DomineeGame extends GameSearch {
             } else {
                 System.out.println("Computer player's turn.");
                 move = domineeGame.getBestMove(startingPosition, false);
-                System.out.println("Computer move: " + move); // Add this line to print the computer's move
+                if (move != null) {
+    System.out.println("Computer move: " + move.toString()); // Add this line to print the computer's move
+} else {
+    System.out.println("Computer move is null. MAIN PRINT");
+}
+System.out.println("Arrived here");
+
                 System.out.println("Arrived here");
             }
 
@@ -299,37 +322,4 @@ public class DomineeGame extends GameSearch {
             }
         }
     }
-
-//    public static void main(String[] args) {
-//    DomineeringPosition startingPosition = new DomineeringPosition(8, 8);
-//    DomineeGame domineeGame = new DomineeGame();
-//
-//    int moveNumber = 1;
-//    while (true) {
-//        System.out.println("Move " + moveNumber + ":");
-//        domineeGame.printPosition(startingPosition);
-//
-//        Move move;
-//        if (moveNumber % 2 == 1) {
-//            System.out.println("Human player's turn.");
-//            move = domineeGame.createMove();
-//        } else {
-//            System.out.println("Computer player's turn.");
-//            move = domineeGame.getBestMove(startingPosition, false);
-//        }
-//
-//        if (move == null) {
-//            System.out.println("Invalid move. Please try again.");
-//            break;
-//        }
-//
-//        startingPosition = (DomineeringPosition) domineeGame.makeMove(startingPosition, true, move);
-//        moveNumber++;
-//
-//        if (domineeGame.gameOver(startingPosition)) {
-//            System.out.println("Game over!");
-//            break;
-//        }
-//    }
-//}
 }
