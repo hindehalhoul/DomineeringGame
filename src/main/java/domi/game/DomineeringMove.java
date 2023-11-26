@@ -26,9 +26,8 @@ package domi.game;
 //        this.orientation = "H"; // Replace with the appropriate value
 //    }
 //}
-
-
 public class DomineeringMove extends Move {
+
     public int row;
     public int col;
     public String orientation;

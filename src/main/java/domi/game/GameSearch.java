@@ -61,8 +61,7 @@ public abstract class GameSearch {
     
     
     
-    protected Vector alphaBetaHelper(int depth, Position p,
-        boolean player, float alpha, float beta) {
+    protected Vector alphaBetaHelper(int depth, Position p, boolean player, float alpha, float beta) {
     if (GameSearch.DEBUG) {
         System.out.println("alphaBetaHelper(" + depth + "," + p + "," + alpha + "," + beta + ")");
     }
@@ -72,25 +71,21 @@ public abstract class GameSearch {
         v.addElement(new Float(value));
         v.addElement(null);
         if (GameSearch.DEBUG) {
-            System.out.println(" alphaBetaHelper: mx depth at " + depth
-                    + ", value=" + value);
+            System.out.println(" alphaBetaHelper: mx depth at " + depth + ", value=" + value);
         }
         return v;
     }
-//    Vector best = new Vector();
+
     Position[] moves = possibleMoves(p, player);
     Vector best = new Vector();
-if (moves.length > 0) {
-    best.addElement(moves[0]);
-    Vector v2 = alphaBetaHelper(depth + 1, moves[0], !player, -beta, -alpha);
-    float value = -((Float) v2.elementAt(0)).floatValue();
-    beta = value;
-}
-for (int i = 1; i < moves.length; i++) {
-    // rest of your code
-}
+    if (moves.length > 0) {
+        best.addElement(moves[0]);
+        Vector v2 = alphaBetaHelper(depth + 1, moves[0], !player, -beta, -alpha);
+        float value = -((Float) v2.elementAt(0)).floatValue();
+        beta = value;
+    }
 
-    for (int i = 0; i < moves.length; i++) {
+    for (int i = 1; i < moves.length; i++) {
         Vector v2 = alphaBetaHelper(depth + 1, moves[i], !player, -beta, -alpha);
         float value = -((Float) v2.elementAt(0)).floatValue();
         if (value > beta) {
@@ -98,8 +93,9 @@ for (int i = 1; i < moves.length; i++) {
                 System.out.println(" ! ! ! value=" + value + ", beta=" + beta + ", move=" + moves[i]);
             }
             beta = value;
-            best = new Vector();
-            best.addElement(moves[i]);
+            best.set(0, moves[i]);
+//            best = new Vector();
+//            best.addElement(moves[i]);
             Enumeration enum2 = v2.elements();
             enum2.nextElement(); // skip previous value
             while (enum2.hasMoreElements()) {
@@ -113,6 +109,7 @@ for (int i = 1; i < moves.length; i++) {
             break;
         }
     }
+
     Vector v3 = new Vector();
     v3.addElement(new Float(beta));
     Enumeration enum2 = best.elements();
@@ -122,7 +119,7 @@ for (int i = 1; i < moves.length; i++) {
     return v3;
 }
 
-
+    
     public void playGame(Position startingPosition, boolean humanPlayFirst) {
         if (humanPlayFirst == false) {
             Vector v = alphaBeta(0, startingPosition, PROGRAM);

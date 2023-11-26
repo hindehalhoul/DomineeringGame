@@ -9,5 +9,7 @@ package domi.game;
  * @author ASUS
  */
 abstract public class Position {
+    
+    
 }
 

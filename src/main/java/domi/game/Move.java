@@ -29,4 +29,3 @@ abstract public class Move {
         this.moves.add(move);
     }
 }
-

@@ -61,9 +61,6 @@ public class DomineeGame extends GameSearch {
         if (p instanceof DomineeringPosition) {
             DomineeringPosition position = (DomineeringPosition) p;
             int[][] board = position.getBoard();
-
-            // You might want to customize this based on your specific game rules
-            // Simple evaluation: count the number of horizontal and vertical pieces for each player
             int playerScore = 0;
             int opponentScore = 0;
 
@@ -76,25 +73,47 @@ public class DomineeGame extends GameSearch {
                     }
                 }
             }
-
-            // Return the difference in scores
             return (player ? 1 : -1) * (playerScore - opponentScore);
         }
-
-        // Default evaluation if the position is not a DomineeringPosition
         return 0.0f;
     }
 
+//    @Override
+//    public void printPosition(Position p) {
+//        // Affichage de la position
+//        if (p instanceof DomineeringPosition) {
+//            DomineeringPosition domineeringPosition = (DomineeringPosition) p;
+//            int[][] board = domineeringPosition.getBoard();
+//
+//
+//            for (int i = 0; i < board.length; i++) {
+//                for (int j = 0; j < board[i].length; j++) {
+//                    System.out.print(board[i][j] + " ");
+//                }
+//                System.out.println();
+//            }
+//        }
+//    }
     @Override
     public void printPosition(Position p) {
-        // Affichage de la position
+        // Display the position
         if (p instanceof DomineeringPosition) {
             DomineeringPosition domineeringPosition = (DomineeringPosition) p;
             int[][] board = domineeringPosition.getBoard();
 
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
-                    System.out.print(board[i][j] + " ");
+                    switch (board[i][j]) {
+                        case 1:
+                            System.out.print("1 ");
+                            break;
+                        case -1:
+                            System.out.print("2 ");  // Print '2' for the computer player's moves
+                            break;
+                        default:
+                            System.out.print("0 ");
+                            break;
+                    }
                 }
                 System.out.println();
             }
@@ -108,8 +127,6 @@ public class DomineeGame extends GameSearch {
             int rows = domineeringPosition.getRows();
             int cols = domineeringPosition.getCols();
             int count = 0;
-
-            // Compter le nombre de mouvements possibles
             for (int i = 0; i < rows - 1; i++) {
                 for (int j = 0; j < cols; j++) {
                     if (domineeringPosition.getBoard()[i][j] == 0 && domineeringPosition.getBoard()[i + 1][j] == 0) {
@@ -117,26 +134,18 @@ public class DomineeGame extends GameSearch {
                     }
                 }
             }
-
-            // Si aucun mouvement possible, retourner un tableau vide
             if (count == 0) {
                 return new Position[0];
             }
-
-            // Créer un tableau de positions pour les mouvements possibles
             Position[] ret = new Position[count];
             count = 0;
-
-            // Générer les positions pour les mouvements possibles
             for (int i = 0; i < rows - 1; i++) {
                 for (int j = 0; j < cols; j++) {
                     if (domineeringPosition.getBoard()[i][j] == 0 && domineeringPosition.getBoard()[i + 1][j] == 0) {
                         DomineeringPosition pos2 = new DomineeringPosition(rows, cols);
-                        // Copier le tableau
                         for (int k = 0; k < rows; k++) {
                             pos2.getBoard()[k] = domineeringPosition.getBoard()[k].clone();
                         }
-                        // Mettre à jour la nouvelle position
                         if (player) {
                             pos2.getBoard()[i][j] = 1;
                             pos2.getBoard()[i + 1][j] = 1;
@@ -203,56 +212,55 @@ public class DomineeGame extends GameSearch {
 
 ////// new fct
     @Override
-public Move getBestMove(Position p, boolean player) {
-    Vector<Object> v = alphaBeta(0, p, player);
+    public Move getBestMove(Position p, boolean player) {
+        Vector<Object> v = alphaBeta(0, p, player);
 
-    Position[] moves = possibleMoves(p, player);
+        Position[] moves = possibleMoves(p, player);
+//        }
+        if (v != null && v.size() > 1) {
+            Position bestMove = (Position) v.elementAt(1);
 
-    System.out.println("Possible moves:");
-    for (Position move : moves) {
-        float eval = positionEvaluation(move, player);
-        System.out.println("Move: \n" + move.toString() + ", Evaluation: " + eval);
-    }
+            if (bestMove != null) {
 
-    if (v != null && v.size() > 1) {
-        Position bestMove = (Position) v.elementAt(1);
-
-        if (bestMove != null) {
-            System.out.println("Best move: \n" + bestMove.toString());
-
-            // Check if the best move is in the list of possible moves
-            boolean isValidBestMove = false;
-            for (Position move : moves) {
-                if (move != null && move.equals(bestMove)) {
-                    isValidBestMove = true;
-                    break;
-                }
-            }
-
-            if (!isValidBestMove) {
-                System.out.println("Invalid best move.");
-                return null;
-            }
-
-            // Check if the best move is null before creating a DomineeringMove
-            if (bestMove instanceof DomineeringPosition) {
-                // Find the corresponding DomineeringMove
+                // Check if the best move is in the list of possible moves
+                boolean isValidBestMove = false;
+                System.out.println("here 1");
                 for (Position move : moves) {
+                    System.out.println("here 2");
                     if (move != null && move.equals(bestMove)) {
-                        return new DomineeringMove((DomineeringPosition) move);
+                        System.out.println("here 3");
+                        isValidBestMove = true;
+                        System.out.println("here 4");
+                        break;
                     }
                 }
+
+                if (!isValidBestMove) {
+                    System.out.println("Invalid best move.");
+                    System.out.println("here 5");
+                    return null;
+                }
+
+                // Check if the best move is null before creating a DomineeringMove
+                if (bestMove instanceof DomineeringPosition) {
+                    // Find the corresponding DomineeringMove
+                    System.out.println("here 6");
+                    for (Position move : moves) {
+                        if (move != null && move.equals(bestMove)) {
+                            System.out.println("here 7");
+                            return new DomineeringMove((DomineeringPosition) move);
+                        }
+                    }
+                }
+            } else {
+                System.out.println("here 8");
+                System.out.println("Best move is null.");
             }
-        } else {
-            System.out.println("Best move is null.");
         }
+        System.out.println("here 9");
+
+        return null;
     }
-
-    return null;
-}
-
-
-
 
     @Override
     public boolean gameOver(Position p) {
@@ -299,20 +307,17 @@ public Move getBestMove(Position p, boolean player) {
                 System.out.println("Computer player's turn.");
                 move = domineeGame.getBestMove(startingPosition, false);
                 if (move != null) {
-    System.out.println("Computer move: " + move.toString()); // Add this line to print the computer's move
-} else {
-    System.out.println("Computer move is null. MAIN PRINT");
-}
-System.out.println("Arrived here");
-
-                System.out.println("Arrived here");
+                    System.out.println("Computer move: " + move.toString()); // Add this line to print the computer's move
+                } else {
+                    System.out.println("Computer move is null. MAIN PRINT");
+                }
+                System.out.println("Arrived here -> leaving else loop");
             }
 
             if (move == null) {
-                System.out.println("Invalid move. Please try again.");
+                System.out.println("Invalid move. Please try again.-> if (move == null)");
                 break;
             }
-
             startingPosition = (DomineeringPosition) domineeGame.makeMove(startingPosition, true, move);
             moveNumber++;
 
