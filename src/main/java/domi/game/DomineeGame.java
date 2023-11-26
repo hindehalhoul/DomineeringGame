@@ -71,32 +71,30 @@ public class DomineeGame {
             }
         };
 
-        // Add a MouseMotionListener to handle mouse movement
         chessboardPanel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 int x = e.getX() / 64;
                 int y = e.getY() / 64;
 
-                // Ensure the currentPoint is within the bounds of the board
                 currentPoint = new Point(Math.min(Math.max(x, 0), 7), Math.min(Math.max(y, 0), 7));
 
                 chessboardPanel.repaint();
             }
         });
 
-        // Add a MouseListener to handle mouse clicks
         chessboardPanel.addMouseListener(new MouseAdapter() {
+            
+            
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (currentPoint.y < 7) {
                     int dominoWidth = currentDominoOrientation ? 128 : 64;
                     int dominoHeight = currentDominoOrientation ? 64 : 128;
 
-                    // Check if the domino will fit within the board boundaries
                     if (currentPoint.x + (dominoWidth / 64) <= 8) {
-                        // Check if the selected position is already occupied by another domino
-                        if (!isPositionOccupied(currentPoint.x, currentPoint.y)) {
+                        if (!isPositionOccupied(currentPoint.x, currentPoint.y, currentDominoOrientation) &&
+                            !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, currentDominoOrientation)) {
                             placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, getColorForCurrentDomino()));
                             currentDominoOrientation = !currentDominoOrientation;
                             chessboardPanel.repaint();
@@ -105,23 +103,49 @@ public class DomineeGame {
                 }
             }
 
-            private boolean isPositionOccupied(int x, int y) {
-                for (Domino domino : placedDominos) {
-                    // Check for horizontal placement
-                    if (domino.getX() <= x && x < domino.getX() + 1 && domino.getY() == y) {
-                        System.out.println("Place occupied HORIZONTAL");
-                        return true; // Position occupied
-                    }
-                    // Check for vertical placement
-                    if (domino.getX() == x && domino.getY() <= y && y < domino.getY() + 1) {
-                        System.out.println("Place occupied VERTICAL");
-                        return true; // Position occupied
-                    }
-                }
-                return false; // Position not occupied
+private boolean isPositionOccupied(int x, int y, boolean horizontal) {
+    for (Domino domino : placedDominos) {
+        if (horizontal) {
+            if (domino.getX() <= x + 1 && x < domino.getX() + 2 && domino.getY() == y || domino.getY() + 1 == y ) {
+                System.out.println("Place occupied HORIZONTAL");
+                return true;
             }
+        } else {
+            if (domino.getY() <= y + 1 && y < domino.getY() + 2 && (domino.getX() == x || domino.getX() + 1 == x)) {
+                System.out.println("Place occupied VERTICAL");
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
-// ...
+
+
+
+
+
+           private boolean isPositionOccupiedByOtherPlayer(int x, int y, boolean horizontal) {
+    for (Domino domino : placedDominos) {
+        if (domino.isHorizontal() != horizontal) {
+          if (horizontal) {
+    if (domino.getX() <= x && x < domino.getX() + 2 && domino.getY() == y) {
+        System.out.println("Place occupied by other player HORIZONTAL");
+        return true;
+    }
+} else {
+    if (domino.getY() <= y  && y < domino.getY() + 2 && (domino.getX() == x || domino.getX() + 1 == x)) {
+        System.out.println("Place occupied by other player VERTICAL");
+        return true;
+    }
+}
+
+        }
+    }
+    return false;
+}
+
+
         });
     }
 
