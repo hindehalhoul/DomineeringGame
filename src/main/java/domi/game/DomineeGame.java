@@ -211,43 +211,52 @@ public class DomineeGame extends GameSearch {
     }
 
 ////// new fct
-    @Override
+
+    
+    
     public Move getBestMove(Position p, boolean player) {
         Vector<Object> v = alphaBeta(0, p, player);
 
         Position[] moves = possibleMoves(p, player);
+
+//        System.out.println("Possible moves:");
+//        for (Position move : moves) {
+//            float eval = positionEvaluation(move, player);
+//            System.out.println("Move: \n" + move.toString() + ", Evaluation: " + eval);
 //        }
+
         if (v != null && v.size() > 1) {
             Position bestMove = (Position) v.elementAt(1);
 
             if (bestMove != null) {
+                System.out.println("Best move: \n" + bestMove.toString());
 
                 // Check if the best move is in the list of possible moves
                 boolean isValidBestMove = false;
                 System.out.println("here 1");
                 for (Position move : moves) {
-                    System.out.println("here 2");
+                System.out.println("here 2");
                     if (move != null && move.equals(bestMove)) {
-                        System.out.println("here 3");
+                System.out.println("here 3");
                         isValidBestMove = true;
-                        System.out.println("here 4");
+                System.out.println("here 4");
                         break;
                     }
                 }
 
                 if (!isValidBestMove) {
                     System.out.println("Invalid best move.");
-                    System.out.println("here 5");
+                System.out.println("here 5");
                     return null;
                 }
 
                 // Check if the best move is null before creating a DomineeringMove
                 if (bestMove instanceof DomineeringPosition) {
                     // Find the corresponding DomineeringMove
-                    System.out.println("here 6");
+                System.out.println("here 6");
                     for (Position move : moves) {
                         if (move != null && move.equals(bestMove)) {
-                            System.out.println("here 7");
+                System.out.println("here 7");
                             return new DomineeringMove((DomineeringPosition) move);
                         }
                     }
@@ -257,11 +266,13 @@ public class DomineeGame extends GameSearch {
                 System.out.println("Best move is null.");
             }
         }
-        System.out.println("here 9");
+                System.out.println("No valid moves");
+                System.out.println("here 9");
 
         return null;
     }
 
+    
     @Override
     public boolean gameOver(Position p) {
         return wonPosition(p, true) || wonPosition(p, false) || drawnPosition(p);
