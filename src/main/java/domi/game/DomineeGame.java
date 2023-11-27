@@ -105,45 +105,45 @@ public class DomineeGame {
 
 private boolean isPositionOccupied(int x, int y, boolean horizontal) {
     for (Domino domino : placedDominos) {
-        if (horizontal) {
-            if (domino.getX() <= x + 1 && x < domino.getX() + 2 && domino.getY() == y || domino.getY() + 1 == y ) {
-                System.out.println("Place occupied HORIZONTAL");
-                return true;
-            }
-        } else {
-            if (domino.getY() <= y + 1 && y < domino.getY() + 2 && (domino.getX() == x || domino.getX() + 1 == x)) {
-                System.out.println("Place occupied VERTICAL");
-                return true;
+        if (domino.isHorizontal() == horizontal) {
+            if (horizontal) {
+                if (domino.getX() <= x + 1 && x < domino.getX() + 2 && domino.getY() == y) {
+                    System.out.println("Place occupied HORIZONTAL");
+                    return true;
+                }
+            } else {
+                if (domino.getY() <= y + 1 && y < domino.getY() + 2 && domino.getX() == x) {
+                    System.out.println("Place occupied VERTICAL");
+                    return true;
+                }
             }
         }
     }
     return false;
 }
 
-
-
-
-
-
-           private boolean isPositionOccupiedByOtherPlayer(int x, int y, boolean horizontal) {
+private boolean isPositionOccupiedByOtherPlayer(int x, int y, boolean horizontal) {
     for (Domino domino : placedDominos) {
-        if (domino.isHorizontal() != horizontal) {
-          if (horizontal) {
-    if (domino.getX() <= x && x < domino.getX() + 2 && domino.getY() == y) {
-        System.out.println("Place occupied by other player HORIZONTAL");
-        return true;
-    }
-} else {
-    if (domino.getY() <= y  && y < domino.getY() + 2 && (domino.getX() == x || domino.getX() + 1 == x)) {
-        System.out.println("Place occupied by other player VERTICAL");
-        return true;
-    }
-}
-
+        if (domino.isHorizontal() == horizontal) {
+            if (horizontal) {
+                if (domino.getX() <= x && x < domino.getX() + 2 && domino.getY() == y) {
+                    System.out.println("Place occupied by other player HORIZONTAL");
+                    return true;
+                }
+            } else {
+                if (domino.getY() <= y  && y < domino.getY() + 2 && domino.getX() == x) {
+                    System.out.println("Place occupied by other player VERTICAL");
+                    return true;
+                }
+            }
         }
     }
     return false;
 }
+
+
+
+
 
 
         });
