@@ -1,7 +1,7 @@
 package domi_interface;
 
 
-import domi.game.DomineeGame;
+//import domi.game.DomineeGame;
 import java.awt.*;
 import javax.swing.*;
 import domi.game.DomineeringPosition;
@@ -17,7 +17,7 @@ import domi.game.DomineeringPosition;
  */
 public class Domineering extends javax.swing.JFrame {
 
-        private DomineeGame domineeGame; 
+//        private DomineeGame domineeGame; 
         private DomineeringPosition currentPosition;// Instance of DomineeGame
 
     /**
@@ -25,7 +25,7 @@ public class Domineering extends javax.swing.JFrame {
      */
     public Domineering() {
         initComponents();
-        domineeGame = new DomineeGame(); // Initialize DomineeGame
+//        domineeGame = new DomineeGame(); // Initialize DomineeGame
         displayChessboard(); // Display the chessboard
     }
     public DomineeringPosition getCurrentPosition() {
@@ -42,7 +42,7 @@ public class Domineering extends javax.swing.JFrame {
         contentPane.setLayout(new BorderLayout());
 
         // Add the JPanel from DomineeGame to the content pane
-        contentPane.add(domineeGame.getChessboardPanel(), BorderLayout.CENTER);
+//        contentPane.add(domineeGame.getChessboardPanel(), BorderLayout.CENTER);
     }
 
     /**
