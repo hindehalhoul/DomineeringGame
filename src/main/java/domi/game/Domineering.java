@@ -94,9 +94,10 @@ public class Domineering extends GameSearch {
         System.out.println();
     }
 
+    
+  /*  
     @Override
     public Position[] possibleMoves(Position p, boolean player) {
-        // Implement generating possible moves for Domineering
         DomineeringPosition pos = (DomineeringPosition) p;
         List<Position> moves = new ArrayList<>();
 
@@ -118,7 +119,38 @@ public class Domineering extends GameSearch {
 
         return moves.toArray(new Position[0]);
     }
+*/
+    
+    
+    @Override
+public Position[] possibleMoves(Position p, boolean player) {
+    // Implement generating possible moves for Domineering
+    DomineeringPosition pos = (DomineeringPosition) p;
+    List<Position> moves = new ArrayList<>();
 
+    for (int row = 0; row < pos.getRows() - 1; row++) {
+        for (int col = 0; col < pos.getCols(); col++) {
+            // If the player is the computer, only consider vertical moves
+            if (!player && pos.isValidMove(row, col, row + 1, col, VERTICAL)) {
+                DomineeringPosition newPos = new DomineeringPosition(pos);
+                newPos.placeDomino(row, col, row + 1, col, VERTICAL, player);
+                moves.add(newPos);
+            }
+
+            // If the player is the human, only consider horizontal moves
+            if (player && pos.getBoard()[row][col] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
+                DomineeringPosition newPos = new DomineeringPosition(pos);
+                newPos.placeDomino(row, col, row, col + 1, HORIZONTAL, player);
+                moves.add(newPos);
+            }
+        }
+    }
+
+    return moves.toArray(new Position[0]);
+}
+
+    
+    
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
         // Implement making a move for Domineering
@@ -130,6 +162,23 @@ public class Domineering extends GameSearch {
 
         return newPos;
     }
+//    @Override
+//    public Position makeMove(Position p, boolean player, Move move) {
+//        // Implement making a move for Domineering
+//        DomineeringPosition pos = (DomineeringPosition) p;
+//        DomineeringMove domMove = (DomineeringMove) move;
+//
+//        // Use orientation to determine the correct end position
+//        int endRow = (domMove.orientation == HORIZONTAL) ? domMove.startRow : domMove.endRow;
+//        int endCol = (domMove.orientation == HORIZONTAL) ? domMove.endCol : domMove.startCol;
+//
+//        System.out.println("Making move: " + domMove.startRow + ", " + domMove.startCol + ", " + endRow + ", " + endCol + ", " + domMove.orientation);
+//
+//        DomineeringPosition newPos = new DomineeringPosition(pos);
+//        newPos.placeDomino(domMove.startRow, domMove.startCol, endRow, endCol, domMove.orientation, player);
+//
+//        return newPos;
+//    }
 
     @Override
     public boolean reachedMaxDepth(Position p, int depth) {
@@ -137,21 +186,6 @@ public class Domineering extends GameSearch {
         return depth >= 5; // Adjust the depth as needed
     }
 
-//    @Override
-//    public Move createMove() {
-//        // Implement creating a move for Domineering (you may need to customize this)
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.print("Enter move (startRow startCol endRow endCol orientation): ");
-//        int startRow = scanner.nextInt();
-//        int startCol = scanner.nextInt();
-//        int endRow = scanner.nextInt();
-//        int endCol = scanner.nextInt();
-//        int orientation = scanner.nextInt();
-//
-//        DomineeringMove move = new DomineeringMove(startRow, startCol, endRow, endCol, orientation);
-//
-//        return move;
-//    }
     @Override
     public Move createMove() {
         // Implement creating a move for Domineering based on start position and orientation
@@ -159,8 +193,8 @@ public class Domineering extends GameSearch {
         System.out.print("Enter move (startRow startCol orientation)(Horizontal = 1; Vertical = 2): ");
         int startRow = scanner.nextInt();
         int startCol = scanner.nextInt();
-        int orientation = scanner.nextInt();
 //        int orientation = scanner.nextInt();
+        int orientation = (scanner.nextInt() == 1) ? HORIZONTAL : VERTICAL;
 
         int endRow, endCol;
 

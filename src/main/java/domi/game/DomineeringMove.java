@@ -33,26 +33,3 @@ public class DomineeringMove extends Move {
                ", Orientation: " + orientation;
     }
 }
-
-
-/*public class DomineeringMove extends Move {
-
-    public int row;
-    public int col;
-    public String orientation;
-
-    public DomineeringMove(int row, int col, String orientation) {
-        this.row = row;
-        this.col = col;
-        this.orientation = orientation;
-    }
-    
-    public DomineeringMove(DomineeringPosition position) {
-        this(0, 0, "H");
-    }
-    @Override
-    public String toString() {
-        return "Row: " + row + ", Column: " + col + ", Orientation: " + orientation;
-    }
-}
-*/
