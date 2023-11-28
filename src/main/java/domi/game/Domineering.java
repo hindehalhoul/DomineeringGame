@@ -10,6 +10,7 @@ public class Domineering extends GameSearch {
     public static final int EMPTY = 0;
     public static final int HORIZONTAL = 1;
     public static final int VERTICAL = 2;
+    private boolean isComputerTurn = false; // computerTurn = 0;
 
     @Override
     public boolean wonPosition(Position p, boolean player) {
@@ -91,7 +92,8 @@ public class Domineering extends GameSearch {
 
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
-        // Implement making a move for Domineering
+
+        isComputerTurn = !player;
         DomineeringPosition pos = (DomineeringPosition) p;
         DomineeringMove domMove = (DomineeringMove) move;
 
@@ -119,41 +121,34 @@ public class Domineering extends GameSearch {
     }
 
     private boolean isComputerTurn() {
-        // You can modify this logic based on your implementation
-        // For example, you might use a variable to keep track of the current turn
-        // and determine if it's the computer's turn or not.
-        return true;  // Change this based on your logic
+        return isComputerTurn;  // computerTurn = true; 
+    }
+
+    public void resetTurn() {
+        isComputerTurn = false;
     }
 
     @Override
     public Move createMove() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter move (startRow startCol orientation)(Horizontal = 1; Vertical = 2): ");
+        System.out.print("Enter move (startRow startCol): ");
         int startRow = scanner.nextInt();
         int startCol = scanner.nextInt();
-        int orientation = scanner.nextInt();
+//        int orientation = scanner.nextInt();
 
-        int endRow, endCol;
-//        int endRow, endCol, orientation;
+//        int endRow, endCol;
+        int endRow, endCol, orientation;
 
-//        if (isComputerTurn()) {
-//            // Computer player, set orientation to VERTICAL
-//            endRow = startRow + 1;
-//            endCol = startCol;
-//            orientation = VERTICAL;
-//        } else {
-//            // Human player, set orientation to HORIZONTAL
-//            endRow = startRow;
-//            endCol = startCol + 1;
-//            orientation = HORIZONTAL;
-//        }
-
-        if (orientation == HORIZONTAL) {
-            endRow = startRow;
-            endCol = startCol + 1;
-        } else {
+        if (isComputerTurn()) {
+            // Computer player, set orientation to VERTICAL
             endRow = startRow + 1;
             endCol = startCol;
+            orientation = VERTICAL;
+        } else {
+            // Human player, set orientation to HORIZONTAL
+            endRow = startRow;
+            endCol = startCol + 1;
+            orientation = HORIZONTAL;
         }
         DomineeringMove move = new DomineeringMove(startRow, startCol, endRow, endCol, orientation);
 
@@ -163,6 +158,8 @@ public class Domineering extends GameSearch {
     public static void main(String[] args) {
         DomineeringPosition p = new DomineeringPosition(8, 8);
         Domineering domineering = new Domineering();
+        domineering.isComputerTurn = false; // Initialize the flag at the beginning of the game
         domineering.playGame(p, true);
+        domineering.resetTurn();
     }
 }
