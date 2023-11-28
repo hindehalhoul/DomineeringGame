@@ -11,7 +11,15 @@ public class Domineering extends GameSearch {
     public static final int EMPTY = 0;
     public static final int HORIZONTAL = 1;
     public static final int VERTICAL = 2;
-    private boolean isComputerTurn = false; // computerTurn = 0;
+    public boolean isComputerTurn = false; // computerTurn = 0;
+    public DomineeringPosition currentPosition;
+    
+    
+    public Domineering(){}
+    
+    public Domineering(DomineeringPosition initialPosition) {
+        currentPosition = initialPosition;
+    }
 
     @Override
     public boolean wonPosition(Position p, boolean player) {
@@ -57,8 +65,10 @@ public class Domineering extends GameSearch {
 
     @Override
     public void printPosition(Position p) {
+
         // Implement the printing of the Domineering board
         DomineeringPosition pos = (DomineeringPosition) p;
+        int[][] board = pos.getBoard();
         for (int row = 0; row < pos.getRows(); row++) {
             for (int col = 0; col < pos.getCols(); col++) {
                 if (pos.getBoard()[row][col] == HORIZONTAL) {
@@ -137,12 +147,41 @@ public class Domineering extends GameSearch {
         return ret;
     }
 
-    private boolean isComputerTurn() {
+    public boolean isComputerTurn() {
         return isComputerTurn;  // computerTurn = true; 
     }
 
     public void resetTurn() {
         isComputerTurn = false;
+    }
+
+    public Position getPosition() {
+        return currentPosition;
+    }
+    // In the Domineering class
+
+    public int getRows() {
+        return ((DomineeringPosition) getPosition()).getRows();
+    }
+
+    public int getCols() {
+        return ((DomineeringPosition) getPosition()).getCols();
+    }
+
+    public boolean isValidMove(int startRow, int startCol) {
+        if (currentPosition != null) {
+            int endRow = startRow;
+            int endCol = startCol + 1;  // Assuming a horizontal move
+            int orientation = Domineering.HORIZONTAL;
+
+            return currentPosition.isValidMove(startRow, startCol, endRow, endCol, orientation);
+        }
+        return false;
+    }
+    // In the Domineering class
+
+    public int[][] getBoard() {
+        return ((DomineeringPosition) getPosition()).getBoard();
     }
 
     @Override
@@ -172,6 +211,8 @@ public class Domineering extends GameSearch {
     public static void main(String[] args) {
         DomineeringPosition p = new DomineeringPosition(8, 8);
         Domineering domineering = new Domineering();
+        domineering.currentPosition = p; // Set the initial position
+
         domineering.isComputerTurn = false; // Initialize the flag at the beginning of the game
         domineering.playGame(p, true);
         domineering.resetTurn();

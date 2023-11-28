@@ -32,23 +32,6 @@ public class DomineeringPosition extends Position implements Cloneable {
     public int getCols() {
         return board[0].length;
     }
-
-//    public void placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
-//        // Check if the move is valid before placing the domino
-//        if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
-//            int marker = (player) ? Domineering.HORIZONTAL : Domineering.VERTICAL;
-//
-//            // Place the domino on the board
-//            for (int i = startRow; i <= endRow; i++) {
-//                for (int j = startCol; j <= endCol; j++) {
-//                    board[i][j] = marker;
-//                }
-//            }
-//        } else {
-//            // Handle invalid move
-//            System.out.println("Invalid move!");
-//        }
-//    }
     public void placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
     // Check if the move is valid before placing the domino
     if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
