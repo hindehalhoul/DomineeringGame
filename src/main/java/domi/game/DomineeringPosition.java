@@ -92,50 +92,6 @@ public class DomineeringPosition extends Position implements Cloneable {
         return false;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    /*public boolean isValidMove(int startRow, int startCol, int endRow, int endCol, int orientation) {
-        // Check if the move is within the bounds of the board
-        if (startRow < 0 || startCol < 0 || endRow >= getRows() || endCol >= getCols()) {
-            return false;
-        }
-
-        // Check if the positions are empty
-        for (int i = startRow; i <= endRow; i++) {
-            for (int j = startCol; j <= endCol; j++) {
-                if (board[i][j] != Domineering.EMPTY) {
-                    return false;
-                }
-            }
-        }
-
-        // Check if the move is valid based on the orientation
-        if (orientation == Domineering.HORIZONTAL && startRow == endRow && startCol + 1 == endCol) {
-            // Check if there's already a vertical domino in the target column
-            if (endCol < getCols() - 1 && board[startRow][endCol + 1] == Domineering.VERTICAL) {
-                return false;
-            }
-
-            // Check if there are available vertical moves in the target column
-            for (int i = startRow; i <= endRow; i++) {
-                if (i < getRows() - 1 && board[i + 1][startCol] != Domineering.EMPTY) {
-                    return false;
-                }
-            }
-
-            return true;
-        } else if (orientation == Domineering.VERTICAL && startRow + 1 == endRow && startCol == endCol) {
-            return true;
-        }
-
-        return false;
-    }
-*/
     // Implementation of the clone method
     @Override
     public DomineeringPosition clone() {

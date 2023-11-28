@@ -100,9 +100,10 @@ public class Domineering extends GameSearch {
 
         return newPos;
     }
+
     public boolean reachedMaxDepth(Position p, int depth) {
         boolean ret = false;
-        if (depth >= 7 ) {
+        if (depth >= 3) {
             return true;
         }
         if (wonPosition(p, false)) {
@@ -117,19 +118,36 @@ public class Domineering extends GameSearch {
         return ret;
     }
 
+    private boolean isComputerTurn() {
+        // You can modify this logic based on your implementation
+        // For example, you might use a variable to keep track of the current turn
+        // and determine if it's the computer's turn or not.
+        return true;  // Change this based on your logic
+    }
+
     @Override
     public Move createMove() {
-        // Implement creating a move for Domineering based on start position and orientation
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter move (startRow startCol orientation)(Horizontal = 1; Vertical = 2): ");
         int startRow = scanner.nextInt();
         int startCol = scanner.nextInt();
         int orientation = scanner.nextInt();
-//        int orientation = (scanner.nextInt() == 1) ? HORIZONTAL : VERTICAL;
 
         int endRow, endCol;
+//        int endRow, endCol, orientation;
 
-        // Calculate end position based on the size of the domino (size 2)
+//        if (isComputerTurn()) {
+//            // Computer player, set orientation to VERTICAL
+//            endRow = startRow + 1;
+//            endCol = startCol;
+//            orientation = VERTICAL;
+//        } else {
+//            // Human player, set orientation to HORIZONTAL
+//            endRow = startRow;
+//            endCol = startCol + 1;
+//            orientation = HORIZONTAL;
+//        }
+
         if (orientation == HORIZONTAL) {
             endRow = startRow;
             endCol = startCol + 1;
@@ -137,7 +155,6 @@ public class Domineering extends GameSearch {
             endRow = startRow + 1;
             endCol = startCol;
         }
-
         DomineeringMove move = new DomineeringMove(startRow, startCol, endRow, endCol, orientation);
 
         return move;
