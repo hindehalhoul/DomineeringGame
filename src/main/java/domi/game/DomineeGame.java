@@ -53,7 +53,7 @@ public class DomineeGame {
                 }
 
                 // Draw the domino at the current mouse position with 50% opacity
-                if (currentPoint != null && !dominoPlaced && currentPoint.y < 7) {
+                if (currentPoint != null && !dominoPlaced && currentPoint.y <= 7) {
                     int dominoWidth = currentDominoOrientation ? 128 : 64;
                     int dominoHeight = currentDominoOrientation ? 64 : 128;
 
@@ -87,21 +87,27 @@ public class DomineeGame {
             
             
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (currentPoint.y < 7) {
-                    int dominoWidth = currentDominoOrientation ? 128 : 64;
-                    int dominoHeight = currentDominoOrientation ? 64 : 128;
+public void mouseClicked(MouseEvent e) {
+    if (currentPoint.y <= 7) {
+        int dominoWidth = currentDominoOrientation ? 128 : 64;
+        int dominoHeight = currentDominoOrientation ? 64 : 128;
 
-                    if (currentPoint.x + (dominoWidth / 64) <= 8) {
-                        if (!isPositionOccupied(currentPoint.x, currentPoint.y, currentDominoOrientation) &&
-                            !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, currentDominoOrientation)) {
-                            placedDominos.add(new Domino(currentPoint.x, currentPoint.y, currentDominoOrientation, getColorForCurrentDomino()));
-                            currentDominoOrientation = !currentDominoOrientation;
-                            chessboardPanel.repaint();
-                        }
-                    }
+        if (currentPoint.x + (dominoWidth / 64) <= 8) {
+            if (!isPositionOccupied(currentPoint.x, currentPoint.y, currentDominoOrientation) &&
+                    !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, currentDominoOrientation)) {
+                if (currentDominoOrientation) { // Vertical placement
+                    placedDominos.add(new Domino(currentPoint.x, currentPoint.y, true, getColorForCurrentDomino()));
+                } else { // Horizontal placement
+                    placedDominos.add(new Domino(currentPoint.x, currentPoint.y, false, getColorForCurrentDomino()));
                 }
+
+                currentDominoOrientation = !currentDominoOrientation;
+                chessboardPanel.repaint();
             }
+        }
+    }
+}
+
 
 private boolean isPositionOccupied(int x, int y, boolean horizontal) {
     for (Domino domino : placedDominos) {
@@ -118,6 +124,19 @@ private boolean isPositionOccupied(int x, int y, boolean horizontal) {
                 }
             }
         }
+        else{
+            if (!horizontal) {
+                if (domino.getX() <= x + 1 && x < domino.getX() + 2 && domino.getY() == y) {
+                    System.out.println("Place occupied VERTICAL1");
+                    return true;
+                }
+            } else {
+                if (domino.getY() <= y + 1 && y < domino.getY() + 2 && domino.getX() == x) {
+                    System.out.println("Place occupied HORIZONTAL1");
+                    return true;
+                }
+            }
+        }
     }
     return false;
 }
@@ -126,17 +145,30 @@ private boolean isPositionOccupiedByOtherPlayer(int x, int y, boolean horizontal
     for (Domino domino : placedDominos) {
         if (domino.isHorizontal() == horizontal) {
             if (horizontal) {
-                if (domino.getX() <= x && x < domino.getX() + 2 && domino.getY() == y) {
+                if (domino.getX() < x && x < domino.getX() + 2 && domino.getY() == y) {
                     System.out.println("Place occupied by other player HORIZONTAL");
                     return true;
                 }
             } else {
-                if (domino.getY() <= y  && y < domino.getY() + 2 && domino.getX() == x) {
+                if (domino.getY() < y  && y < domino.getY() + 2 && domino.getX() == x) {
                     System.out.println("Place occupied by other player VERTICAL");
                     return true;
                 }
             }
         }
+        //else{
+          //  if (!horizontal) {
+            //    if (domino.getX() <= x && x <= domino.getX() + 2 && domino.getY() == y) {
+              //      System.out.println("Place occupied by other player VERTICAL ");
+                //    return true;
+                //}
+            //} else {
+              //  if (domino.getY() <= y  && y <= domino.getY() + 2 && domino.getX() == x) {
+                //    System.out.println("Place occupied by other player HORIZONTAL");
+                  //  return true;
+                //}
+           // }
+        //}
     }
     return false;
 }
