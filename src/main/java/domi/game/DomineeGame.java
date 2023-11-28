@@ -86,27 +86,42 @@ public class DomineeGame {
         chessboardPanel.addMouseListener(new MouseAdapter() {
             
             
-            @Override
+       @Override
 public void mouseClicked(MouseEvent e) {
-    if (currentPoint.y <= 7) {
-        int dominoWidth = currentDominoOrientation ? 128 : 64;
-        int dominoHeight = currentDominoOrientation ? 64 : 128;
+    int dominoWidth = currentDominoOrientation ? 128 : 64;
+    int dominoHeight = currentDominoOrientation ? 64 : 128;
 
-        if (currentPoint.x + (dominoWidth / 64) <= 8) {
-            if (!isPositionOccupied(currentPoint.x, currentPoint.y, currentDominoOrientation) &&
-                    !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, currentDominoOrientation)) {
-                if (currentDominoOrientation) { // Vertical placement
-                    placedDominos.add(new Domino(currentPoint.x, currentPoint.y, true, getColorForCurrentDomino()));
-                } else { // Horizontal placement
-                    placedDominos.add(new Domino(currentPoint.x, currentPoint.y, false, getColorForCurrentDomino()));
-                }
-
-                currentDominoOrientation = !currentDominoOrientation;
+    if (currentDominoOrientation) {
+        // Le domino est vertical
+        if (currentPoint.y <= 7 && currentPoint.x + (dominoWidth / 64) <= 8) {
+            // Code pour placer le domino vertical
+            if (!isPositionOccupied(currentPoint.x, currentPoint.y, true) &&
+                !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, true)) {
+                placedDominos.add(new Domino(currentPoint.x, currentPoint.y, true, getColorForCurrentDomino()));
+                currentDominoOrientation = false;
+                chessboardPanel.repaint();
+            }
+        }
+    } else {
+        // Le domino est horizontal
+        if (currentPoint.y < 7 && currentPoint.x + (dominoWidth / 64) <= 8) {
+            // Code pour placer le domino horizontal
+            if (!isPositionOccupied(currentPoint.x, currentPoint.y, false) &&
+                !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, false)) {
+                placedDominos.add(new Domino(currentPoint.x, currentPoint.y, false, getColorForCurrentDomino()));
+                currentDominoOrientation = true;
                 chessboardPanel.repaint();
             }
         }
     }
 }
+
+
+    
+
+    
+
+
 
 
 private boolean isPositionOccupied(int x, int y, boolean horizontal) {
