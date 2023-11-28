@@ -84,48 +84,65 @@ public class DomineeGame {
         });
 
         chessboardPanel.addMouseListener(new MouseAdapter() {
-            
-            
-       @Override
-public void mouseClicked(MouseEvent e) {
-    int dominoWidth = currentDominoOrientation ? 128 : 64;
-    int dominoHeight = currentDominoOrientation ? 64 : 128;
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int dominoWidth = currentDominoOrientation ? 128 : 64;
+                int dominoHeight = currentDominoOrientation ? 64 : 128;
 
-    if (currentDominoOrientation) {
-        // Le domino est vertical
-        if (currentPoint.y <= 7 && currentPoint.x + (dominoWidth / 64) <= 8) {
-            // Code pour placer le domino vertical
-            if (!isPositionOccupied(currentPoint.x, currentPoint.y, true) &&
-                !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, true)) {
-                placedDominos.add(new Domino(currentPoint.x, currentPoint.y, true, getColorForCurrentDomino()));
-                currentDominoOrientation = false;
-                chessboardPanel.repaint();
+                if (currentDominoOrientation) {
+                    // Le domino est vertical
+                    if (currentPoint.y <= 7 && currentPoint.x + (dominoWidth / 64) <= 8) {
+                        // Code pour placer le domino vertical
+                        if (!isPositionOccupied(currentPoint.x, currentPoint.y, true) &&
+                                !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, true)) {
+                            placedDominos.add(new Domino(currentPoint.x, currentPoint.y, true, getColorForCurrentDomino()));
+                            currentDominoOrientation = false;
+                            chessboardPanel.repaint();
+                        }
+                    }
+                } else {
+                    // Le domino est horizontal
+                    if (currentPoint.y < 7 && currentPoint.x + (dominoWidth / 64) <= 8) {
+                        // Code pour placer le domino horizontal
+                        if (!isPositionOccupied(currentPoint.x, currentPoint.y, false) &&
+                                !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, false)) {
+                            placedDominos.add(new Domino(currentPoint.x, currentPoint.y, false, getColorForCurrentDomino()));
+                            currentDominoOrientation = true;
+                            chessboardPanel.repaint();
+                        }
+                    }
+                }
+
+                // Vérification pour déterminer le vainqueur
+                if (!isSpaceAvailable()) {
+                    if (currentDominoOrientation == false) {
+                        System.out.println("Joueur 1 a vaincu !");
+                    } else {
+                        System.out.println("Joueur 2 a vaincu !");
+                    }
+                }
             }
-        }
-    } else {
-        // Le domino est horizontal
-        if (currentPoint.y < 7 && currentPoint.x + (dominoWidth / 64) <= 8) {
-            // Code pour placer le domino horizontal
-            if (!isPositionOccupied(currentPoint.x, currentPoint.y, false) &&
-                !isPositionOccupiedByOtherPlayer(currentPoint.x, currentPoint.y, false)) {
-                placedDominos.add(new Domino(currentPoint.x, currentPoint.y, false, getColorForCurrentDomino()));
-                currentDominoOrientation = true;
-                chessboardPanel.repaint();
-            }
-        }
+        });
     }
-}
 
+    private boolean isSpaceAvailable() {
+        // Vérifier s'il y a encore de la place sur le plateau
+        // Tu peux utiliser la logique que tu utilises pour vérifier si une position est occupée
+        // en parcourant le plateau pour voir s'il reste des places disponibles
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                if (!isPositionOccupied(x, y, true) && !isPositionOccupiedByOtherPlayer(x, y, true) &&
+                        !isPositionOccupied(x, y, false) && !isPositionOccupiedByOtherPlayer(x, y, false)) {
+                    return true; // Il reste de la place
+                }
+            }
+        }
+        return false; // Aucune place disponible
+    }
 
-    
-
-    
-
-
-
-
-private boolean isPositionOccupied(int x, int y, boolean horizontal) {
+   private boolean isPositionOccupied(int x, int y, boolean horizontal) {
     for (Domino domino : placedDominos) {
+        System.out.println("Checking position " + x + ", " + y + " for horizontal: " + horizontal);
         if (domino.isHorizontal() == horizontal) {
             if (horizontal) {
                 if (domino.getX() <= x + 1 && x < domino.getX() + 2 && domino.getY() == y) {
@@ -138,10 +155,9 @@ private boolean isPositionOccupied(int x, int y, boolean horizontal) {
                     return true;
                 }
             }
-        }
-        else{
+        } else {
             if (!horizontal) {
-                if (domino.getX() <= x + 1 && x < domino.getX() + 2 && domino.getY() == y) {
+                if (domino.getX() <= x && x < domino.getX() + 2 && domino.getY() == y) {
                     System.out.println("Place occupied VERTICAL1");
                     return true;
                 }
@@ -158,6 +174,7 @@ private boolean isPositionOccupied(int x, int y, boolean horizontal) {
 
 private boolean isPositionOccupiedByOtherPlayer(int x, int y, boolean horizontal) {
     for (Domino domino : placedDominos) {
+        System.out.println("Checking position " + x + ", " + y + " for horizontal: " + horizontal);
         if (domino.isHorizontal() == horizontal) {
             if (horizontal) {
                 if (domino.getX() < x && x < domino.getX() + 2 && domino.getY() == y) {
@@ -165,36 +182,15 @@ private boolean isPositionOccupiedByOtherPlayer(int x, int y, boolean horizontal
                     return true;
                 }
             } else {
-                if (domino.getY() < y  && y < domino.getY() + 2 && domino.getX() == x) {
+                if (domino.getY() < y && y < domino.getY() + 2 && domino.getX() == x) {
                     System.out.println("Place occupied by other player VERTICAL");
                     return true;
                 }
             }
         }
-        //else{
-          //  if (!horizontal) {
-            //    if (domino.getX() <= x && x <= domino.getX() + 2 && domino.getY() == y) {
-              //      System.out.println("Place occupied by other player VERTICAL ");
-                //    return true;
-                //}
-            //} else {
-              //  if (domino.getY() <= y  && y <= domino.getY() + 2 && domino.getX() == x) {
-                //    System.out.println("Place occupied by other player HORIZONTAL");
-                  //  return true;
-                //}
-           // }
-        //}
     }
     return false;
 }
-
-
-
-
-
-
-        });
-    }
 
     private Color getColorForCurrentDomino() {
         return currentDominoOrientation ? new Color(192, 0, 255) : new Color(0, 135, 255);
