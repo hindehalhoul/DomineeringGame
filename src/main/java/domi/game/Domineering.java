@@ -12,20 +12,6 @@ public class Domineering extends GameSearch {
     public static final int VERTICAL = 2;
 
     @Override
-    public boolean drawnPosition(Position p) {
-        // Implement the drawn position check for Domineering
-        DomineeringPosition pos = (DomineeringPosition) p;
-        for (int i = 0; i < pos.getRows(); i++) {
-            for (int j = 0; j < pos.getCols(); j++) {
-                if (pos.getBoard()[i][j] == EMPTY) {
-                    return false; // If there is an empty spot, the game is not drawn
-                }
-            }
-        }
-        return true; // All spots are filled, and no player has won, so it's a draw
-    }
-
-    @Override
     public boolean wonPosition(Position p, boolean player) {
         // Implement the winning position check for Domineering
         DomineeringPosition pos = (DomineeringPosition) p;
@@ -57,24 +43,6 @@ public class Domineering extends GameSearch {
         return 0.0f; // Placeholder, customize as needed
     }
 
-//    @Override
-//    public void printPosition(Position p) {
-//        // Implement the printing of the Domineering board
-//        DomineeringPosition pos = (DomineeringPosition) p;
-//        for (int row = 0; row < pos.getRows(); row++) {
-//            for (int col = 0; col < pos.getCols(); col++) {
-//                if (pos.getBoard()[row][col] == HORIZONTAL) {
-//                    System.out.print("H");
-//                } else if (pos.getBoard()[row][col] == VERTICAL) {
-//                    System.out.print("V");
-//                } else {
-//                    System.out.print("0 ");
-//                }
-//            }
-//            System.out.println();
-//        }
-//        System.out.println();
-//    }
     @Override
     public void printPosition(Position p) {
         // Implement the printing of the Domineering board
@@ -94,22 +62,23 @@ public class Domineering extends GameSearch {
         System.out.println();
     }
 
-    
-  /*  
     @Override
     public Position[] possibleMoves(Position p, boolean player) {
+        // Implement generating possible moves for Domineering
         DomineeringPosition pos = (DomineeringPosition) p;
         List<Position> moves = new ArrayList<>();
 
         for (int row = 0; row < pos.getRows() - 1; row++) {
             for (int col = 0; col < pos.getCols(); col++) {
-                if (pos.isValidMove(row, col, row + 1, col, VERTICAL)) {
+                // If the player is the computer, only consider vertical moves
+                if (!player && pos.isValidMove(row, col, row + 1, col, VERTICAL)) {
                     DomineeringPosition newPos = new DomineeringPosition(pos);
                     newPos.placeDomino(row, col, row + 1, col, VERTICAL, player);
                     moves.add(newPos);
                 }
 
-                if (pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
+                // If the player is the human, only consider horizontal moves
+                if (player && pos.getBoard()[row][col] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
                     DomineeringPosition newPos = new DomineeringPosition(pos);
                     newPos.placeDomino(row, col, row, col + 1, HORIZONTAL, player);
                     moves.add(newPos);
@@ -119,38 +88,7 @@ public class Domineering extends GameSearch {
 
         return moves.toArray(new Position[0]);
     }
-*/
-    
-    
-    @Override
-public Position[] possibleMoves(Position p, boolean player) {
-    // Implement generating possible moves for Domineering
-    DomineeringPosition pos = (DomineeringPosition) p;
-    List<Position> moves = new ArrayList<>();
 
-    for (int row = 0; row < pos.getRows() - 1; row++) {
-        for (int col = 0; col < pos.getCols(); col++) {
-            // If the player is the computer, only consider vertical moves
-            if (!player && pos.isValidMove(row, col, row + 1, col, VERTICAL)) {
-                DomineeringPosition newPos = new DomineeringPosition(pos);
-                newPos.placeDomino(row, col, row + 1, col, VERTICAL, player);
-                moves.add(newPos);
-            }
-
-            // If the player is the human, only consider horizontal moves
-            if (player && pos.getBoard()[row][col] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
-                DomineeringPosition newPos = new DomineeringPosition(pos);
-                newPos.placeDomino(row, col, row, col + 1, HORIZONTAL, player);
-                moves.add(newPos);
-            }
-        }
-    }
-
-    return moves.toArray(new Position[0]);
-}
-
-    
-    
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
         // Implement making a move for Domineering
@@ -162,28 +100,21 @@ public Position[] possibleMoves(Position p, boolean player) {
 
         return newPos;
     }
-//    @Override
-//    public Position makeMove(Position p, boolean player, Move move) {
-//        // Implement making a move for Domineering
-//        DomineeringPosition pos = (DomineeringPosition) p;
-//        DomineeringMove domMove = (DomineeringMove) move;
-//
-//        // Use orientation to determine the correct end position
-//        int endRow = (domMove.orientation == HORIZONTAL) ? domMove.startRow : domMove.endRow;
-//        int endCol = (domMove.orientation == HORIZONTAL) ? domMove.endCol : domMove.startCol;
-//
-//        System.out.println("Making move: " + domMove.startRow + ", " + domMove.startCol + ", " + endRow + ", " + endCol + ", " + domMove.orientation);
-//
-//        DomineeringPosition newPos = new DomineeringPosition(pos);
-//        newPos.placeDomino(domMove.startRow, domMove.startCol, endRow, endCol, domMove.orientation, player);
-//
-//        return newPos;
-//    }
-
-    @Override
     public boolean reachedMaxDepth(Position p, int depth) {
-        // Implement the max depth check for Domineering
-        return depth >= 5; // Adjust the depth as needed
+        boolean ret = false;
+        if (depth >= 7 ) {
+            return true;
+        }
+        if (wonPosition(p, false)) {
+            ret = true;
+        } else if (wonPosition(p, true)) {
+            ret = true;
+        }
+        if (GameSearch.DEBUG) {
+            System.out.println("reachedMaxDepth: pos=" + p.toString() + ", depth=" + depth
+                    + ", ret=" + ret);
+        }
+        return ret;
     }
 
     @Override
@@ -193,8 +124,8 @@ public Position[] possibleMoves(Position p, boolean player) {
         System.out.print("Enter move (startRow startCol orientation)(Horizontal = 1; Vertical = 2): ");
         int startRow = scanner.nextInt();
         int startCol = scanner.nextInt();
-//        int orientation = scanner.nextInt();
-        int orientation = (scanner.nextInt() == 1) ? HORIZONTAL : VERTICAL;
+        int orientation = scanner.nextInt();
+//        int orientation = (scanner.nextInt() == 1) ? HORIZONTAL : VERTICAL;
 
         int endRow, endCol;
 

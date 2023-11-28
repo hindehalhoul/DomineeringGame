@@ -24,7 +24,7 @@ public abstract class GameSearch {
     /*
      * Abstract methods:
      */
-    public abstract boolean drawnPosition(Position p);
+//    public abstract boolean drawnPosition(Position p);
 
     public abstract boolean wonPosition(Position p, boolean player);
 
@@ -178,10 +178,7 @@ public abstract class GameSearch {
                 System.out.println("Human won");
                 break;
             }
-            if (drawnPosition(startingPosition)) {
-                System.out.println("Drawn game");
-                break;
-            }
+            
             System.out.print("\nYour move:");
             Move move = createMove();
             startingPosition = makeMove(startingPosition, HUMAN, move);
@@ -192,9 +189,9 @@ public abstract class GameSearch {
             }
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
             Enumeration enum2 = v.elements();
-//            while (enum2.hasMoreElements()) {
-//                System.out.println(" next element: " + enum2.nextElement());
-//            }
+            while (enum2.hasMoreElements()) {
+                System.out.println(" next element: " + enum2.nextElement());
+            }
             startingPosition = (Position) v.elementAt(1);
             if (startingPosition == null) {
                 System.out.println("Drawn game");
