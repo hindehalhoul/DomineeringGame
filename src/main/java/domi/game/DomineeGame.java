@@ -9,6 +9,9 @@ import javax.swing.*;
 public class DomineeGame {
 
     private JPanel chessboardPanel;
+    private int helpCount = 3; // Nombre d'aides disponibles
+private JButton helpButton;
+
     private Point currentPoint;
     private boolean dominoPlaced;
     private List<Domino> placedDominos;
@@ -69,7 +72,25 @@ public class DomineeGame {
                     }
                 }
             }
+            
         };
+         helpButton = new JButton("Help");
+    helpButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
+    chessboardPanel.add(helpButton);
+
+    helpButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (helpCount > 0) {
+                giveHelp();
+                helpCount--;
+                System.out.println("Aides restantes : " + helpCount);
+            } else {
+                System.out.println("Vous n'avez plus d'aides disponibles.");
+            }
+        }
+    });
+    
 
         chessboardPanel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -120,10 +141,46 @@ public class DomineeGame {
                     } else {
                         System.out.println("Joueur 2 a vaincu !");
                     }
+                    helpCount = 3;
                 }
             }
         });
     }
+    private void giveHelp() {
+    // Logique pour montrer où le joueur doit poser son domino
+
+    // Trouver une position valide pour placer le domino
+    int helpX = -1;
+    int helpY = -1;
+
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            // Vérifier si la position est valide pour le domino vertical
+            if (!isPositionOccupied(x, y, true) && !isPositionOccupiedByOtherPlayer(x, y, true)) {
+                helpX = x;
+                helpY = y;
+                break;
+            }
+
+            // Vérifier si la position est valide pour le domino horizontal
+            if (!isPositionOccupied(x, y, false) && !isPositionOccupiedByOtherPlayer(x, y, false)) {
+                helpX = x;
+                helpY = y;
+                break;
+            }
+        }
+        if (helpX != -1 && helpY != -1) {
+            break;
+        }
+    }
+
+    if (helpX != -1 && helpY != -1) {
+        System.out.println("L'aide a été donnée. Placez votre domino à la position : (" + helpX + ", " + helpY + ")");
+    } else {
+        System.out.println("Aucune position valide trouvée pour l'aide.");
+    }
+}
+
 
     private boolean isSpaceAvailable() {
         // Vérifier s'il y a encore de la place sur le plateau
@@ -140,7 +197,7 @@ public class DomineeGame {
         return false; // Aucune place disponible
     }
 
-   private boolean isPositionOccupied(int x, int y, boolean horizontal) {
+ private boolean isPositionOccupied(int x, int y, boolean horizontal) {
     for (Domino domino : placedDominos) {
         System.out.println("Checking position " + x + ", " + y + " for horizontal: " + horizontal);
         if (domino.isHorizontal() == horizontal) {
