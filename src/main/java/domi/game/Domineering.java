@@ -38,12 +38,6 @@ public class Domineering extends GameSearch {
     }
 
     @Override
-//    public float positionEvaluation(Position p, boolean player) {
-//        // Implement the position evaluation for Domineering (you may need to customize this)
-//        // Return a positive value if the current player is winning, a negative value if losing,
-//        // and 0 if the position is drawn.
-//        return 0.0f; // Placeholder, customize as needed
-//    }
     public float positionEvaluation(Position p, boolean player) {
     DomineeringPosition pos = (DomineeringPosition)p;
     int playerMoves = possibleMoves(pos, player).length;
