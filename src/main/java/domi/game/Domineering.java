@@ -1,6 +1,7 @@
 package domi.game;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -37,12 +38,29 @@ public class Domineering extends GameSearch {
     }
 
     @Override
+//    public float positionEvaluation(Position p, boolean player) {
+//        // Implement the position evaluation for Domineering (you may need to customize this)
+//        // Return a positive value if the current player is winning, a negative value if losing,
+//        // and 0 if the position is drawn.
+//        return 0.0f; // Placeholder, customize as needed
+//    }
     public float positionEvaluation(Position p, boolean player) {
-        // Implement the position evaluation for Domineering (you may need to customize this)
-        // Return a positive value if the current player is winning, a negative value if losing,
-        // and 0 if the position is drawn.
-        return 0.0f; // Placeholder, customize as needed
+    DomineeringPosition pos = (DomineeringPosition)p;
+    int playerMoves = possibleMoves(pos, player).length;
+    int opponentMoves = possibleMoves(pos, !player).length;
+
+    if (playerMoves == 0 && opponentMoves > 0) {
+        // Le joueur n'a pas de mouvements possibles, donc il perd
+        return -1.0f;
+    } else if (opponentMoves == 0 && playerMoves > 0) {
+        // L'adversaire n'a pas de mouvements possibles, donc le joueur gagne
+        return 1.0f;
+    } else {
+        // Sinon, évaluez la position en fonction du nombre de mouvements possibles
+        return playerMoves - opponentMoves;
     }
+}
+
 
     @Override
     public void printPosition(Position p) {
@@ -134,9 +152,6 @@ public class Domineering extends GameSearch {
         System.out.print("Enter move (startRow startCol): ");
         int startRow = scanner.nextInt();
         int startCol = scanner.nextInt();
-//        int orientation = scanner.nextInt();
-
-//        int endRow, endCol;
         int endRow, endCol, orientation;
 
         if (isComputerTurn()) {
@@ -154,6 +169,8 @@ public class Domineering extends GameSearch {
 
         return move;
     }
+    
+
 
     public static void main(String[] args) {
         DomineeringPosition p = new DomineeringPosition(8, 8);
