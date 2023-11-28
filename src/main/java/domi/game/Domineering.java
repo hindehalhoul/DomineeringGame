@@ -39,22 +39,21 @@ public class Domineering extends GameSearch {
 
     @Override
     public float positionEvaluation(Position p, boolean player) {
-    DomineeringPosition pos = (DomineeringPosition)p;
-    int playerMoves = possibleMoves(pos, player).length;
-    int opponentMoves = possibleMoves(pos, !player).length;
+        DomineeringPosition pos = (DomineeringPosition) p;
+        int playerMoves = possibleMoves(pos, player).length;
+        int opponentMoves = possibleMoves(pos, !player).length;
 
-    if (playerMoves == 0 && opponentMoves > 0) {
-        // Le joueur n'a pas de mouvements possibles, donc il perd
-        return -1.0f;
-    } else if (opponentMoves == 0 && playerMoves > 0) {
-        // L'adversaire n'a pas de mouvements possibles, donc le joueur gagne
-        return 1.0f;
-    } else {
-        // Sinon, évaluez la position en fonction du nombre de mouvements possibles
-        return playerMoves - opponentMoves;
+        if (playerMoves == 0 && opponentMoves > 0) {
+            // Le joueur n'a pas de mouvements possibles, donc il perd
+            return -1.0f;
+        } else if (opponentMoves == 0 && playerMoves > 0) {
+            // L'adversaire n'a pas de mouvements possibles, donc le joueur gagne
+            return 1.0f;
+        } else {
+            // Sinon, évaluez la position en fonction du nombre de mouvements possibles
+            return playerMoves - opponentMoves;
+        }
     }
-}
-
 
     @Override
     public void printPosition(Position p) {
@@ -89,13 +88,19 @@ public class Domineering extends GameSearch {
                     newPos.placeDomino(row, col, row + 1, col, VERTICAL, player);
                     moves.add(newPos);
                 }
-
                 // If the player is the human, only consider horizontal moves
-                if (player && pos.getBoard()[row][col] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
+                if (player && col < pos.getCols() - 1 && pos.getBoard()[row][col] != VERTICAL && pos.getBoard()[row][col + 1] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
                     DomineeringPosition newPos = new DomineeringPosition(pos);
                     newPos.placeDomino(row, col, row, col + 1, HORIZONTAL, player);
                     moves.add(newPos);
                 }
+
+//                // If the player is the human, only consider horizontal moves
+//                if (player && pos.getBoard()[row][col] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
+//                    DomineeringPosition newPos = new DomineeringPosition(pos);
+//                    newPos.placeDomino(row, col, row, col + 1, HORIZONTAL, player);
+//                    moves.add(newPos);
+//                }
             }
         }
 
@@ -163,8 +168,6 @@ public class Domineering extends GameSearch {
 
         return move;
     }
-    
-
 
     public static void main(String[] args) {
         DomineeringPosition p = new DomineeringPosition(8, 8);

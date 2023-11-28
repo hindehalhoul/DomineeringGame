@@ -96,45 +96,10 @@ public abstract class GameSearch {
         return v3;
     }
 
-    /*
-    public void playGame(Position startingPosition, boolean humanPlayFirst) {
-        if (humanPlayFirst == false) {
-            Vector v = alphaBeta(0, startingPosition, PROGRAM);
-            startingPosition = (Position) v.elementAt(1);
-        }
-        while (true) {
-            printPosition(startingPosition);
-            if (wonPosition(startingPosition, PROGRAM)) {
-                System.out.println("Program won");
-                break;
-            }
-            if (wonPosition(startingPosition, HUMAN)) {
-                System.out.println("Human won");
-                break;
-            }
-            
-            System.out.print("\nYour move:");
-            Move move = createMove();
-            startingPosition = makeMove(startingPosition, HUMAN, move);
-            printPosition(startingPosition);
-            if (wonPosition(startingPosition, HUMAN)) {
-                System.out.println("Human won");
-                break;
-            }
-            Vector v = alphaBeta(0, startingPosition, PROGRAM);
-            Enumeration enum2 = v.elements();
-            startingPosition = (Position) v.elementAt(1);
-            if (startingPosition == null) {
-                System.out.println("Drawn game");
-                break;
-            }
-        }
-    }*/
     
     
     
-    
-    public void playGame(Position startingPosition, boolean humanPlayFirst) {
+   /* public void playGame(Position startingPosition, boolean humanPlayFirst) {
     if (!humanPlayFirst) {
         Vector v = alphaBeta(0, startingPosition, PROGRAM);
         if (v.size() > 1) {
@@ -205,18 +170,15 @@ private boolean isGameDrawn(Position p) {
     return computerMoves.length == 0 || humanMoves.length == 0;
 }
 
+   */
     
     
     
-    
-    
-  /*  
     public void playGame(Position startingPosition, boolean humanPlayFirst) {
     if (!humanPlayFirst) {
         Vector v = alphaBeta(0, startingPosition, PROGRAM);
         if (v.size() > 1) {
             startingPosition = (Position) v.elementAt(1);
-            printPosition(startingPosition); // Print computer's move
         } else {
             System.out.println("Erreur : Pas d'élément à l'indice 1 dans le vecteur v");
             return;
@@ -247,6 +209,7 @@ private boolean isGameDrawn(Position p) {
         startingPosition = makeMove(startingPosition, HUMAN, move);
         printPosition(startingPosition);
 
+        // Check if the game is over after the human move
         if (wonPosition(startingPosition, HUMAN)) {
             System.out.println("Human won");
             break;
@@ -270,12 +233,14 @@ private boolean isGameDrawn(Position p) {
     }
 }
 
+// Add a method to check if the game is drawn
 private boolean isGameDrawn(Position p) {
     Position[] computerMoves = possibleMoves(p, PROGRAM);
     Position[] humanMoves = possibleMoves(p, HUMAN);
     return computerMoves.length == 0 || humanMoves.length == 0;
 }
 
-    */
-  
+    
+    
+    
 }
