@@ -93,6 +93,10 @@ public class DomineeGame {
         
         saveButton = new JButton("Save");
 saveButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
+
+saveButton.setForeground(Color.WHITE); // Couleur du texte
+saveButton.setBackground(new Color(0, 102, 204)); // Couleur de fond
+saveButton.setFocusPainted(false); // Enlève le contour autour du texte lorsqu'il est sélectionné
 chessboardPanel.add(saveButton);
 
 saveButton.addActionListener(new ActionListener() {
@@ -105,8 +109,12 @@ saveButton.addActionListener(new ActionListener() {
 
         
         helpButton = new JButton("Help");
-        helpButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        chessboardPanel.add(helpButton);
+helpButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
+helpButton.setForeground(Color.WHITE); // Couleur du texte
+helpButton.setBackground(Color.RED); // Couleur de fond
+helpButton.setFocusPainted(false); // Enlève le contour autour du texte lorsqu'il est sélectionné
+
+chessboardPanel.add(helpButton);
 
         helpButton.addActionListener(new ActionListener() {
             @Override
