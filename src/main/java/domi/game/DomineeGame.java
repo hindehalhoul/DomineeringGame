@@ -190,20 +190,27 @@ public class DomineeGame {
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-    private boolean isSpaceAvailable() {
-        // Vérifier s'il y a encore de la place sur le plateau
-        // Tu peux utiliser la logique que tu utilises pour vérifier si une position est occupée
-        // en parcourant le plateau pour voir s'il reste des places disponibles
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                if (!isPositionOccupied(x, y, true) && !isPositionOccupiedByOtherPlayer(x, y, true)
-                        && !isPositionOccupied(x, y, false) && !isPositionOccupiedByOtherPlayer(x, y, false)) {
-                    return true; // Il reste de la place
-                }
+  private boolean isSpaceAvailable() {
+    // Compter le nombre total de places logiques pour les dominos horizontaux et verticaux
+    int totalHorizontalPositions = 0;
+    int totalVerticalPositions = 0;
+
+    // Parcourir le plateau pour compter les places logiques
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            if (!isPositionOccupied(x, y, true) && !isPositionOccupiedByOtherPlayer(x, y, true)) {
+                totalVerticalPositions++;
+            }
+
+            if (!isPositionOccupied(x, y, false) && !isPositionOccupiedByOtherPlayer(x, y, false)) {
+                totalHorizontalPositions++;
             }
         }
-        return false; // Aucune place disponible
     }
+
+    // Vérifier si le nombre total de places logiques est atteint pour les deux orientations
+    return totalHorizontalPositions > 0 && totalVerticalPositions > 0;
+}
 
     private boolean isPositionOccupied(int x, int y, boolean horizontal) {
         for (Domino domino : placedDominos) {
