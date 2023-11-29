@@ -229,32 +229,33 @@ private void saveGameState() {
 }
 ///////////////////////////////////////////////////////////////////////////////////////
 public void loadGameState() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("gameState.txt"))) {
-            placedDominos.clear(); // Effacer les dominos actuellement placés
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                int x = Integer.parseInt(values[0]);
-                int y = Integer.parseInt(values[1]);
-                boolean horizontal = Boolean.parseBoolean(values[2]);
-                int colorValue = Integer.parseInt(values[3]);
+    try (BufferedReader reader = new BufferedReader(new FileReader("gameState.txt"))) {
+        // Effacer les dominos actuellement placés
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] values = line.split(",");
+            int x = Integer.parseInt(values[0]);
+            int y = Integer.parseInt(values[1]);
+            boolean horizontal = Boolean.parseBoolean(values[2]);
+            int colorValue = Integer.parseInt(values[3]);
 
-                // Convertir la valeur numérique de couleur en objet Color
-                Color color = new Color(colorValue);
+            // Convertir la valeur numérique de couleur en objet Color
+            Color color = new Color(colorValue);
 
-                // Utilisez ces valeurs pour recréer votre objet Domino
-                Domino domino = new Domino(x, y, horizontal, color);
+            // Utilisez ces valeurs pour recréer votre objet Domino
+            Domino domino = new Domino(x, y, horizontal, color);
 
-                // Ajouter le domino à la liste des dominos placés
-                placedDominos.add(domino);
-            }
-            chessboardPanel.repaint(); // Redessiner le plateau avec les nouveaux dominos
-            System.out.println("État du jeu chargé !");
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+            // Ajouter le domino à la liste des dominos placés
+            placedDominos.add(domino);
         }
+        chessboardPanel.repaint(); // Redessiner le plateau avec les nouveaux dominos
+        System.out.println("État du jeu chargé !");
+    } catch (FileNotFoundException e) {
+        System.out.println("Le fichier gameState.txt n'existe pas. Aucun état du jeu chargé.");
+    } catch (IOException | NumberFormatException e) {
+        e.printStackTrace();
     }
-
+}
 
 
 
