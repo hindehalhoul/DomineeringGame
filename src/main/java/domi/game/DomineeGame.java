@@ -5,6 +5,12 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.*;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class DomineeGame {
 
@@ -13,6 +19,9 @@ public class DomineeGame {
     private JButton helpButton;
 
     private Point helpCoordinates;
+
+    
+    private JButton saveButton;
 
     private Point currentPoint;
     private boolean dominoPlaced;
@@ -80,6 +89,21 @@ public class DomineeGame {
             }
 
         };
+        
+        
+        saveButton = new JButton("Save");
+saveButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
+chessboardPanel.add(saveButton);
+
+saveButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        saveGameState();
+        System.out.println("État du jeu sauvegardé !");
+    }
+});
+
+        
         helpButton = new JButton("Help");
         helpButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
         chessboardPanel.add(helpButton);
@@ -140,14 +164,14 @@ public class DomineeGame {
                 }
 
                 // Vérification pour déterminer le vainqueur
-                if (!isSpaceAvailable()) {
-                    if (currentDominoOrientation == false) {
-                        System.out.println("Joueur 1 a vaincu !");
-                    } else {
-                        System.out.println("Joueur 2 a vaincu !");
-                    }
-                    helpCount = 3;
-                }
+               if (!isSpaceAvailable()) {
+    if (currentDominoOrientation == false) {
+        JOptionPane.showMessageDialog(chessboardPanel, "Joueur 1 a vaincu !", "Fin du jeu", JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        JOptionPane.showMessageDialog(chessboardPanel, "Joueur 2 a vaincu !", "Fin du jeu", JOptionPane.INFORMATION_MESSAGE);
+    }
+    helpCount = 3;
+}
             }
         });
     }
@@ -189,6 +213,50 @@ public class DomineeGame {
             System.out.println("Aucune position valide trouvée pour l'aide.");
         }
     }
+    ////////////////////
+private void saveGameState() {
+    // Exemple de sauvegarde dans un fichier (vous pouvez ajuster selon vos besoins)
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("gameState.txt"))) {
+        // Utilisez BufferedWriter pour écrire des lignes dans le fichier
+        for (Domino domino : placedDominos) {
+            writer.write(domino.getX() + "," + domino.getY() + "," + domino.isHorizontal() + "," + domino.getColor().getRGB());
+            writer.newLine();  // Ajoute une nouvelle ligne pour chaque domino
+        }
+        System.out.println("État du jeu sauvegardé !");
+    } catch (IOException ex) {
+        ex.printStackTrace();
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////
+public void loadGameState() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("gameState.txt"))) {
+            placedDominos.clear(); // Effacer les dominos actuellement placés
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                int x = Integer.parseInt(values[0]);
+                int y = Integer.parseInt(values[1]);
+                boolean horizontal = Boolean.parseBoolean(values[2]);
+                int colorValue = Integer.parseInt(values[3]);
+
+                // Convertir la valeur numérique de couleur en objet Color
+                Color color = new Color(colorValue);
+
+                // Utilisez ces valeurs pour recréer votre objet Domino
+                Domino domino = new Domino(x, y, horizontal, color);
+
+                // Ajouter le domino à la liste des dominos placés
+                placedDominos.add(domino);
+            }
+            chessboardPanel.repaint(); // Redessiner le plateau avec les nouveaux dominos
+            System.out.println("État du jeu chargé !");
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
   private boolean isSpaceAvailable() {
