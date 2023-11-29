@@ -11,6 +11,8 @@ package domi.game;
 import static domi.game.Domineering.HORIZONTAL;
 import static domi.game.Domineering.VERTICAL;
 import javax.swing.*;
+import javax.swing.text.Position;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +36,7 @@ public class DomineeringGUI extends JFrame {
 
         buttons = new JButton[rows][cols];
         JPanel boardPanel = new JPanel(new GridLayout(rows, cols));
+        currentPosition = new DomineeringPosition(rows, cols);
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -92,70 +95,71 @@ public class DomineeringGUI extends JFrame {
             }
 
             // Make the move
-            if (position.isValidMove(row, col, endRow, endCol, orientation)) {
+            if (currentPosition.isValidMove(row, col, endRow, endCol, orientation)) {
                 DomineeringMove move = new DomineeringMove(row, col, domineering.isComputerTurn());
-                domineering.makeMove(domineering.getPosition(), domineering.isComputerTurn(), move);
+                domineering.makeMove(currentPosition, domineering.isComputerTurn(), move);
 
                 updateGUI(row, col, orientation);
 
                 // Check if the game has ended
-                if (!domineering.wonPosition(position, domineering.isComputerTurn())) {
+                if (!domineering.wonPosition(currentPosition, domineering.isComputerTurn())) {
                     // Computer's turn
-                    computerMove();
+                    computerMove(currentPosition);
                 }
             } else {
                 System.out.println("Invalid move!");
             }
         }
-
     }
 
-//    private void computerMove() {
-//        System.out.print("computer move");
-//        Vector v = domineering.alphaBeta(0, domineering.getPosition(), domineering.isComputerTurn());
-//        if (v.size() > 1) {
-//            MoveResult moveResult = new MoveResult((DomineeringPosition) domineering.getPosition(), null);
-//            moveResult.makeMoveComputer(domineering.getPosition(), domineering.isComputerTurn(), (Move) v.elementAt(1));
-//            int[] placedDominoResult = moveResult.getPlacedDominoResult();
-//            int lastI = placedDominoResult[0];
-//            int lastJ = placedDominoResult[1];
-//            updateGUI(lastI, lastJ, 2);
-//        }
-//
-//    }
-    private void computerMove() {
+   
+    private void computerMove(DomineeringPosition currentPosition) {
         System.out.print("computer move");
-        Vector v = domineering.alphaBeta(0, domineering.getPosition(), domineering.isComputerTurn());
+        Vector v = domineering.alphaBeta(0, currentPosition, !domineering.isComputerTurn());
         System.out.print("\n VECTOR  \n " + v);
 
         if (v.size() > 1) {
-            Position p = (Position) v.elementAt(1);
-            DomineeringPosition pos = (DomineeringPosition) p;
+//            Position p = (Position) v.elementAt(1);
+//            System.out.print("\n p \n " + p.toString());
+            DomineeringPosition pos = (DomineeringPosition) v.elementAt(1);
             DomineeringMove move = new DomineeringMove(pos);
 
-            // Correct the order of arguments in the following line
-            int[] placedDominoResult = domineering.makeMoveComputer(p, move.startRow, move.startCol, move.endRow, move.endCol, 2, domineering.isComputerTurn());
+            System.out.print("\n X  " + pos.getRows());
+            System.out.print("\n Y  " + pos.getCols());
 
-            System.out.print("\nMOVE  0: " + placedDominoResult[0]);
-            System.out.print("\nMOVE  1: " + placedDominoResult[1]);
-            updateGUI(placedDominoResult[0], placedDominoResult[1], 2);
+            // Find the position of the vertical domino (value 2)
+            int verticalRow = -1;
+            int verticalCol = -1;
+
+            for (int i = 0; i < pos.getRows(); i++) {
+                for (int j = 0; j < pos.getCols(); j++) {
+                    if (pos.getBoard()[i][j] == 2) {
+                        verticalRow = i;
+                        verticalCol = j;
+                        break;
+                    }
+                }
+                if (verticalRow != -1) {
+                    break;
+                }
+            }
+
+            domineering.makeMove(pos, !domineering.isComputerTurn(), move);
+
+            updateGUI(verticalRow, verticalCol, 2);
+            // Now verticalRow and verticalCol contain the position of the vertical domino
+            System.out.println("\nVertical Domino Position: (" + verticalRow + ", " + verticalCol + ")");
         }
     }
-    //    private void makeProgramMove() {
-            //        currentPosition.makeProgramMove();
-            //        updateGUI();
-            //        
-            //    }
-
 
     private void updateGUI(int row, int col, int orientation) {
-        int[][] board = domineering.getBoard();
 
         if (orientation == Domineering.HORIZONTAL) {
             buttons[row][col].setText("H");
             buttons[row][col + 1].setText("H");
             buttons[row][col].setEnabled(false);
             buttons[row][col + 1].setEnabled(false);
+
         } else if (orientation == Domineering.VERTICAL) {
             buttons[row][col].setText("M");
             buttons[row + 1][col].setText("M");
@@ -177,6 +181,9 @@ public class DomineeringGUI extends JFrame {
     }
 
     public static void main(String[] args) {
+        DomineeringPosition p = new DomineeringPosition(8, 8);
+        Domineering domineering = new Domineering();
+        domineering.currentPosition = p; // Set the initial position
         SwingUtilities.invokeLater(() -> new DomineeringGUI());
     }
 }

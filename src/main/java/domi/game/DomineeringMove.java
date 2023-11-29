@@ -43,7 +43,7 @@ public class DomineeringMove extends Move {
 
     // Default constructor for creating a move based on a DomineeringPosition
     public DomineeringMove(DomineeringPosition position) {
-        this(0, 0);
+        this(position.getRows(), position.getRows());
     }
 
     @Override
