@@ -153,30 +153,31 @@ public class DomineeGame {
     }
 
     //////////////////////////////////////////////////////////
-    private Point getHelpCoordinates() {
-        // Logique pour trouver où le joueur doit poser son domino
+  private Point getHelpCoordinates() {
+    // Trouver une position valide pour placer le domino
+    for (int x = 0; x < 7; x++) {
+        for (int y = 0; y < 7; y++) {
+            // Vérifier si la position est valide pour le domino vertical
+            if (!isPositionOccupied(x, y, true) && !isPositionOccupied(x, y + 1, true)
+                    && !isPositionOccupiedByOtherPlayer(x, y, true) && !isPositionOccupiedByOtherPlayer(x, y + 1, true)) {
+                helpCoordinates = new Point(x, y);
+                return helpCoordinates;
+            }
 
-        // Trouver une position valide pour placer le domino
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                // Vérifier si la position est valide pour le domino vertical
-                if (!isPositionOccupied(x, y, true) && !isPositionOccupiedByOtherPlayer(x, y, true)) {
-                    helpCoordinates = new Point(x, y);
-                    return helpCoordinates;
-                }
-
-                // Vérifier si la position est valide pour le domino horizontal
-                if (!isPositionOccupied(x, y, false) && !isPositionOccupiedByOtherPlayer(x, y, false)) {
-                    helpCoordinates = new Point(x, y);
-                    return helpCoordinates;
-                }
+            // Vérifier si la position est valide pour le domino horizontal
+            if (!isPositionOccupied(x, y, false) && !isPositionOccupied(x + 1, y, false)
+                    && !isPositionOccupiedByOtherPlayer(x, y, false) && !isPositionOccupiedByOtherPlayer(x + 1, y, false)) {
+                helpCoordinates = new Point(x, y);
+                return helpCoordinates;
             }
         }
-
-        // Aucune position valide trouvée
-        helpCoordinates = null;
-        return null;
     }
+
+    // Aucune position valide trouvée
+    helpCoordinates = null;
+    return null;
+}
+
 
     private void giveHelp() {
         Point helpCoordinates = getHelpCoordinates();
