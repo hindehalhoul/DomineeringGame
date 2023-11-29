@@ -15,10 +15,12 @@ public class Domineering extends GameSearch {
     public boolean isComputerTurn = false; // computerTurn = 0;
     public DomineeringPosition currentPosition;
 
-    public Domineering() {
-            currentPosition = new DomineeringPosition(8, 8);
+    public int computerMoveRow;
+    public int computerMoveCol;
 
-        
+    public Domineering() {
+        currentPosition = new DomineeringPosition(8, 8);
+
     }
 
     public Domineering(DomineeringPosition initialPosition) {
@@ -115,6 +117,20 @@ public class Domineering extends GameSearch {
         return moves.toArray(new Position[0]);
     }
 
+    public int[] makeMoveComputer(Position p,int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
+        isComputerTurn = !player;
+        DomineeringPosition pos = (DomineeringPosition) p;
+        DomineeringPosition newPos = new DomineeringPosition(pos);
+
+        // Make a move and get the result (row, col)
+        int[] placedDominoResult = newPos.placeDomino(startRow, startCol, endRow, endCol, orientation, player);
+
+        // Update the current position
+        currentPosition = new DomineeringPosition(newPos);
+
+        return placedDominoResult;
+    }
+
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
 
@@ -127,7 +143,6 @@ public class Domineering extends GameSearch {
 
         return newPos;
     }
-    
 
     public boolean reachedMaxDepth(Position p, int depth) {
         boolean ret = false;
@@ -166,7 +181,6 @@ public class Domineering extends GameSearch {
     public int getCols() {
         return ((DomineeringPosition) getPosition()).getCols();
     }
-
 
     public int[][] getBoard() {
         return ((DomineeringPosition) getPosition()).getBoard();

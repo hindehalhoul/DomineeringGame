@@ -19,6 +19,11 @@ public class DomineeringMove extends Move {
         this.orientation = orientation;
     }
     
+    public DomineeringMove(int startRow, int startCol) {
+        this.startRow = startRow;
+        this.startCol = startCol;
+    }
+    
     public DomineeringMove(int startRow, int startCol, boolean isComputerTurn) {
         this.startRow = startRow;
         this.startCol = startCol;
@@ -38,9 +43,7 @@ public class DomineeringMove extends Move {
 
     // Default constructor for creating a move based on a DomineeringPosition
     public DomineeringMove(DomineeringPosition position) {
-        this(0, 0, 0, 0, 0);
-        // Extract startRow, startCol, endRow, endCol, and orientation from the DomineeringPosition or adjust as needed
-        // For example, you might use the position's state to determine these values
+        this(0, 0);
     }
 
     @Override

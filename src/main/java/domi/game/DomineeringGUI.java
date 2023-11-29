@@ -21,7 +21,7 @@ public class DomineeringGUI extends JFrame {
     private Domineering domineering;
     private JButton[][] buttons;
 
-    private Position currentPosition;
+    private DomineeringPosition currentPosition;
 
     public DomineeringGUI() {
         domineering = new Domineering();
@@ -75,7 +75,6 @@ public class DomineeringGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.print("gui 1\n");
             DomineeringPosition position = (DomineeringPosition) domineering.getPosition();
             int endRow, endCol, orientation;
             int ver = 2, hor = 1;
@@ -85,27 +84,22 @@ public class DomineeringGUI extends JFrame {
                 endRow = row + 1;
                 endCol = col;
                 orientation = ver;
-                System.out.print("gui \n");
             } else {
                 // Human player, set orientation to HORIZONTAL
                 endRow = row;
                 endCol = col + 1;
                 orientation = hor;
-                System.out.print("gui 3\n");
             }
 
             // Make the move
             if (position.isValidMove(row, col, endRow, endCol, orientation)) {
-                System.out.print("gui 4\n");
                 DomineeringMove move = new DomineeringMove(row, col, domineering.isComputerTurn());
-                System.out.print("gui 5\n");
                 domineering.makeMove(domineering.getPosition(), domineering.isComputerTurn(), move);
-                System.out.print("gui 6\n");
-                // Update the GUI
-                updateGUI();
+
+                updateGUI(row, col, orientation);
 
                 // Check if the game has ended
-                if (!domineering.wonPosition(domineering.getPosition(), domineering.isComputerTurn())) {
+                if (!domineering.wonPosition(position, domineering.isComputerTurn())) {
                     // Computer's turn
                     computerMove();
                 }
@@ -116,30 +110,59 @@ public class DomineeringGUI extends JFrame {
 
     }
 
+//    private void computerMove() {
+//        System.out.print("computer move");
+//        Vector v = domineering.alphaBeta(0, domineering.getPosition(), domineering.isComputerTurn());
+//        if (v.size() > 1) {
+//            MoveResult moveResult = new MoveResult((DomineeringPosition) domineering.getPosition(), null);
+//            moveResult.makeMoveComputer(domineering.getPosition(), domineering.isComputerTurn(), (Move) v.elementAt(1));
+//            int[] placedDominoResult = moveResult.getPlacedDominoResult();
+//            int lastI = placedDominoResult[0];
+//            int lastJ = placedDominoResult[1];
+//            updateGUI(lastI, lastJ, 2);
+//        }
+//
+//    }
     private void computerMove() {
         System.out.print("computer move");
         Vector v = domineering.alphaBeta(0, domineering.getPosition(), domineering.isComputerTurn());
+        System.out.print("\n VECTOR  \n " + v);
+
         if (v.size() > 1) {
-            domineering.makeMove(domineering.getPosition(), domineering.isComputerTurn(), (Move) v.elementAt(1));
-            updateGUI();
+            Position p = (Position) v.elementAt(1);
+            DomineeringPosition pos = (DomineeringPosition) p;
+            DomineeringMove move = new DomineeringMove(pos);
+
+            // Correct the order of arguments in the following line
+            int[] placedDominoResult = domineering.makeMoveComputer(p, move.startRow, move.startCol, move.endRow, move.endCol, 2, domineering.isComputerTurn());
+
+            System.out.print("\nMOVE  0: " + placedDominoResult[0]);
+            System.out.print("\nMOVE  1: " + placedDominoResult[1]);
+            updateGUI(placedDominoResult[0], placedDominoResult[1], 2);
         }
     }
+    //    private void makeProgramMove() {
+            //        currentPosition.makeProgramMove();
+            //        updateGUI();
+            //        
+            //    }
 
-    private void updateGUI() {
-        System.out.print("update\n");
-        System.out.print("update board");
+
+    private void updateGUI(int row, int col, int orientation) {
         int[][] board = domineering.getBoard();
-        for (int i = 0; i < buttons.length; i++) {
-            for (int j = 0; j < buttons[i].length; j++) {
-                if (board[i][j] == Domineering.HORIZONTAL) {
-                    buttons[i][j].setText("H");
-                } else if (board[i][j] == Domineering.VERTICAL) {
-                    buttons[i][j].setText("V");
-                } else {
-                    buttons[i][j].setText("");
-                }
-                buttons[i][j].setEnabled(false); // Disable buttons after each move
-            }
+
+        if (orientation == Domineering.HORIZONTAL) {
+            buttons[row][col].setText("H");
+            buttons[row][col + 1].setText("H");
+            buttons[row][col].setEnabled(false);
+            buttons[row][col + 1].setEnabled(false);
+        } else if (orientation == Domineering.VERTICAL) {
+            buttons[row][col].setText("M");
+            buttons[row + 1][col].setText("M");
+            buttons[row][col].setEnabled(false);
+            buttons[row + 1][col].setEnabled(false);
+        } else {
+            buttons[row][col].setText("AH");
         }
     }
 
