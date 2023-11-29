@@ -208,20 +208,26 @@ public class DomineeGame {
     private boolean isPositionOccupied(int x, int y, boolean horizontal) {
         for (Domino domino : placedDominos) {
             if (domino.isHorizontal() == horizontal) {
-                    
-                    if ((domino.getX() == x && domino.getY() == y) ) {
+                if (horizontal) {
+                    if ((domino.getX() == x && domino.getY() == y) || (domino.getX() == x + 1 && domino.getY() == y) ) {
                         System.out.println(" HORIZONTAL");
                         return true;
                     }
-                 
-            } else {
-                    if ((domino.getX() == x && domino.getY() == y) || 
-                            (domino.getX() == x && domino.getY() == y + 1) ||
-                            (domino.getX() + 1 == x  && domino.getY() == y + 1) ||
-                            (domino.getX() + 1 == x  && domino.getY() == y )) {
+                } else {
+                    if ((domino.getX() == x  && domino.getY() == y) || (domino.getX() == x && domino.getY() == y + 1)  ) {
                         return true;
                     }
-                 
+                }
+            } else {
+                if (!horizontal) {
+                    if ((domino.getX() == x && domino.getY() == y) || (domino.getX() == x && domino.getY() == y + 1) ||(domino.getX() + 1 == x  && domino.getY() == y + 1) ||(domino.getX() + 1 == x  && domino.getY() == y )) {
+                        return true;
+                    }
+                } else {
+                    if ((domino.getX() == x && domino.getY() == y) || (domino.getX() == x + 1 && domino.getY() == y)|| (domino.getX() == x + 1 && domino.getY()+ 1 == y) || (domino.getX() == x  && domino.getY()+ 1 == y)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
