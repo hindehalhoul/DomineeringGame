@@ -19,6 +19,7 @@ public class Domineering extends GameSearch {
 
     @Override
     public boolean wonPosition(Position p, boolean player) {
+        // Vérifie si le joueur a gagné la position actuelle
         DomineeringPosition pos = (DomineeringPosition) p;
         int marker = (player) ? HORIZONTAL : VERTICAL;
 
@@ -40,6 +41,7 @@ public class Domineering extends GameSearch {
 
     @Override
     public float positionEvaluation(Position p, boolean player) {
+        // Évalue la position actuelle en fonction du nombre de mouvements possibles
         DomineeringPosition pos = (DomineeringPosition) p;
         int playerMoves = possibleMoves(pos, player).length;
         int opponentMoves = possibleMoves(pos, !player).length;
@@ -58,7 +60,7 @@ public class Domineering extends GameSearch {
 
     @Override
     public void printPosition(Position p) {
-
+        // Affiche la position actuelle sur la console
         DomineeringPosition pos = (DomineeringPosition) p;
         int[][] board = pos.getBoard();
         for (int row = 0; row < pos.getRows(); row++) {
@@ -78,20 +80,20 @@ public class Domineering extends GameSearch {
 
     @Override
     public Position[] possibleMoves(Position p, boolean player) {
-
+        // Calcule et retourne les mouvements possibles pour un joueur donné
         DomineeringPosition pos = (DomineeringPosition) p;
         List<Position> moves = new ArrayList<>();
 
         for (int row = 0; row < pos.getRows() - 1; row++) {
             for (int col = 0; col < pos.getCols(); col++) {
-                // If the player is the computer, only consider vertical moves
                 if (!player && pos.isValidMove(row, col, row + 1, col, VERTICAL)) {
                     DomineeringPosition newPos = new DomineeringPosition(pos);
                     newPos.placeDomino(row, col, row + 1, col, VERTICAL, player);
                     moves.add(newPos);
                 }
-                // If the player is the human, only consider horizontal moves
-                if (player && col < pos.getCols() - 1 && pos.getBoard()[row][col] != VERTICAL && pos.getBoard()[row][col + 1] != VERTICAL && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
+                if (player && col < pos.getCols() - 1 && pos.getBoard()[row][col] != VERTICAL
+                        && pos.getBoard()[row][col + 1] != VERTICAL
+                        && pos.isValidMove(row, col, row, col + 1, HORIZONTAL)) {
                     DomineeringPosition newPos = new DomineeringPosition(pos);
                     newPos.placeDomino(row, col, row, col + 1, HORIZONTAL, player);
                     moves.add(newPos);
@@ -101,22 +103,23 @@ public class Domineering extends GameSearch {
 
         return moves.toArray(new Position[0]);
     }
-    
+
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
-
+        // Effectue un mouvement sur la position actuelle
         isComputerTurn = !player;
         DomineeringPosition pos = (DomineeringPosition) p;
         DomineeringMove domMove = (DomineeringMove) move;
 
         DomineeringPosition newPos = new DomineeringPosition(pos);
-        newPos.placeDomino(domMove.startRow, domMove.startCol, domMove.endRow, domMove.endCol, domMove.orientation, player);
+        newPos.placeDomino(domMove.startRow, domMove.startCol, domMove.endRow, domMove.endCol, domMove.orientation,
+                player);
 
         return newPos;
     }
 
     public boolean reachedMaxDepth(Position p, int depth) {
-
+        // Vérifie si la profondeur maximale a été atteinte lors de la recherche
         boolean ret = false;
         if (depth >= 3) {
             return true;
@@ -134,7 +137,7 @@ public class Domineering extends GameSearch {
     }
 
     public boolean isComputerTurn() {
-        return isComputerTurn; 
+        return isComputerTurn;
     }
 
     public void resetTurn() {
@@ -159,6 +162,7 @@ public class Domineering extends GameSearch {
 
     @Override
     public Move createMove() {
+        // Crée un mouvement en demandant à l'utilisateur de saisir les coordonnées
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter move (startRow startCol): ");
         int startRow = scanner.nextInt();
@@ -166,12 +170,12 @@ public class Domineering extends GameSearch {
         int endRow, endCol, orientation;
 
         if (isComputerTurn()) {
-            // Computer player, set orientation to VERTICAL
+            // Joueur ordinateur, orientation définie sur VERTICAL
             endRow = startRow + 1;
             endCol = startCol;
             orientation = VERTICAL;
         } else {
-            // Human player, set orientation to HORIZONTAL
+            // Joueur humain, orientation définie sur HORIZONTAL
             endRow = startRow;
             endCol = startCol + 1;
             orientation = HORIZONTAL;
@@ -182,11 +186,12 @@ public class Domineering extends GameSearch {
     }
 
     public static void main(String[] args) {
+        // Initialisation du jeu Domineering et lancement d'une partie
         DomineeringPosition p = new DomineeringPosition(8, 8);
         Domineering domineering = new Domineering();
-        domineering.currentPosition = p; 
+        domineering.currentPosition = p;
 
-        domineering.isComputerTurn = false; 
+        domineering.isComputerTurn = false;
         domineering.playGame(p, true);
         domineering.resetTurn();
     }

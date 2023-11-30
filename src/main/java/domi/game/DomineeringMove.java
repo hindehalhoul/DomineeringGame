@@ -1,3 +1,9 @@
+
+package domi.game;
+
+
+
+
 // La classe DomineeringMove étend la classe Move et représente un mouvement dans le jeu Domineering.
 
 public class DomineeringMove extends Move {
