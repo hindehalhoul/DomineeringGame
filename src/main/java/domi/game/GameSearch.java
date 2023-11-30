@@ -153,7 +153,7 @@ public abstract class GameSearch {
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
             if (v.size() > 1) {
                 startingPosition = (Position) v.elementAt(1);
-                printPosition(startingPosition); // Print computer's move
+                //printPosition(startingPosition); // Print computer's move
             } else {
                 System.out.println("Drawn game");
                 break;

@@ -88,7 +88,8 @@ public class Domineering extends GameSearch {
     }
 
     @Override
-    public Position[] possibleMoves(Position p, boolean player) {
+    public Position[] possibleMoves(Position p, boolean player) {    
+
         // Implement generating possible moves for Domineering
         DomineeringPosition pos = (DomineeringPosition) p;
         List<Position> moves = new ArrayList<>();
@@ -113,19 +114,19 @@ public class Domineering extends GameSearch {
         return moves.toArray(new Position[0]);
     }
 
-    public int[] makeMoveComputer(Position p,int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
-        isComputerTurn = !player;
-        DomineeringPosition pos = (DomineeringPosition) p;
-        DomineeringPosition newPos = new DomineeringPosition(pos);
-
-        // Make a move and get the result (row, col)
-        int[] placedDominoResult = newPos.placeDomino(startRow, startCol, endRow, endCol, orientation, player);
-
-        // Update the current position
-        currentPosition = new DomineeringPosition(newPos);
-
-        return placedDominoResult;
-    }
+//    public int[] makeMoveComputer(Position p,int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
+//        isComputerTurn = !player;
+//        DomineeringPosition pos = (DomineeringPosition) p;
+//        DomineeringPosition newPos = new DomineeringPosition(pos);
+//
+//        // Make a move and get the result (row, col)
+//        int[] placedDominoResult = newPos.placeDomino(startRow, startCol, endRow, endCol, orientation, player);
+//
+//        // Update the current position
+//        currentPosition = new DomineeringPosition(newPos);
+//
+//        return placedDominoResult;
+//    }
 
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
@@ -140,7 +141,9 @@ public class Domineering extends GameSearch {
         return newPos;
     }
 
-    public boolean reachedMaxDepth(Position p, int depth) {
+    public boolean reachedMaxDepth(Position p, int depth) {     
+//        System.out.print("reachedMaxDepth");
+
         boolean ret = false;
         if (depth >= 3) {
             return true;
@@ -184,7 +187,6 @@ public class Domineering extends GameSearch {
 
     @Override
     public Move createMove() {
-        System.out.print("createMove");
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter move (startRow startCol): ");
         int startRow = scanner.nextInt();

@@ -112,22 +112,17 @@ public class DomineeringGUI extends JFrame {
         }
     }
 
-   
     private void computerMove(DomineeringPosition currentPosition) {
-        System.out.print("computer move");
+        System.out.println("Computer move");
+
         Vector v = domineering.alphaBeta(0, currentPosition, !domineering.isComputerTurn());
-      //  System.out.print("\n VECTOR  \n " + v);
 
         if (v.size() > 1) {
-//            Position p = (Position) v.elementAt(1);
-//            System.out.print("\n p \n " + p.toString());
             DomineeringPosition pos = (DomineeringPosition) v.elementAt(1);
-            DomineeringMove move = new DomineeringMove(pos);
 
-            System.out.print("\n X  " + pos.getRows());
-            System.out.print("\n Y  " + pos.getCols());
+            System.out.println("Alpha-Beta Result: " + v);
+            System.out.println("Board Configuration:\n" + pos);
 
-            // Find the position of the vertical domino (value 2)
             int verticalRow = -1;
             int verticalCol = -1;
 
@@ -143,15 +138,61 @@ public class DomineeringGUI extends JFrame {
                     break;
                 }
             }
+            System.out.println("Vertical Domino Position: (" + verticalRow + ", " + verticalCol + ")");
 
-            domineering.makeMove(pos, !domineering.isComputerTurn(), move);
+            if (verticalRow != -1 && verticalCol != -1) {
+                DomineeringMove move = new DomineeringMove(verticalRow, verticalCol, !domineering.isComputerTurn());
+                System.out.println("Attempting to make move: " + move);
 
-            updateGUI(verticalRow, verticalCol, 2);
-            // Now verticalRow and verticalCol contain the position of the vertical domino
-            System.out.println("\nVertical Domino Position: (" + verticalRow + ", " + verticalCol + ")");
+                // Add the following debugging statements
+                System.out.println("Before Move:\n" + pos);
+
+                domineering.makeMove(pos, !domineering.isComputerTurn(), move);
+
+                System.out.println("After Move:\n" + pos);
+
+                updateGUI(verticalRow, verticalCol, Domineering.VERTICAL);
+            } else {
+                System.out.println("Invalid move!");
+            }
+        } else {
+            System.out.println("Invalid move!");
         }
     }
 
+//    private void computerMove(DomineeringPosition currentPosition) {
+//        System.out.print("computer move");
+//        Vector v = domineering.alphaBeta(0, currentPosition, !domineering.isComputerTurn());
+//
+//        if (v.size() > 1) {
+//            DomineeringPosition pos = (DomineeringPosition) v.elementAt(1);
+//            DomineeringMove move = new DomineeringMove(pos);
+//
+//            System.out.print("\n X  " + pos.getRows());
+//            System.out.print("\n Y  " + pos.getCols());
+//
+//            int verticalRow = -1;
+//            int verticalCol = -1;
+//
+//            for (int i = 0; i < pos.getRows(); i++) {
+//                for (int j = 0; j < pos.getCols(); j++) {
+//                    if (pos.getBoard()[i][j] == 2) {
+//                        verticalRow = i;
+//                        verticalCol = j;
+//                        break;
+//                    }
+//                }
+//                if (verticalRow != -1) {
+//                    break;
+//                }
+//            }
+//
+//            domineering.makeMove(pos, !domineering.isComputerTurn(), move);
+//
+//            updateGUI(verticalRow, verticalCol, 2);
+//            System.out.println("\nVertical Domino Position: (" + verticalRow + ", " + verticalCol + ")");
+//        }
+//    }
     private void updateGUI(int row, int col, int orientation) {
 
         if (orientation == Domineering.HORIZONTAL) {
@@ -159,12 +200,17 @@ public class DomineeringGUI extends JFrame {
             buttons[row][col + 1].setText("H");
             buttons[row][col].setEnabled(false);
             buttons[row][col + 1].setEnabled(false);
+            currentPosition.placeDomino(row, col, row, col + 1, Domineering.HORIZONTAL, !domineering.isComputerTurn());
 
+            // currentPosition.board[row][col]=
+            // currentPosition.board[row][col+1]=
         } else if (orientation == Domineering.VERTICAL) {
             buttons[row][col].setText("M");
             buttons[row + 1][col].setText("M");
             buttons[row][col].setEnabled(false);
             buttons[row + 1][col].setEnabled(false);
+            currentPosition.placeDomino(row, col, row + 1, col, Domineering.VERTICAL, !domineering.isComputerTurn());
+
         } else {
             buttons[row][col].setText("AH");
         }

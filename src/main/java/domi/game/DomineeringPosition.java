@@ -33,28 +33,28 @@ public class DomineeringPosition extends Position implements Cloneable {
         return board[0].length;
     }
 
-    public int[] placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
-        // Check if the move is valid before placing the domino
-        if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
-            int marker = (player) ? Domineering.HORIZONTAL : Domineering.VERTICAL;
+//    public int[] placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
+//        // Check if the move is valid before placing the domino
+//        if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
+//            int marker = (player) ? Domineering.HORIZONTAL : Domineering.VERTICAL;
+//
+//            // Place the domino on the board
+//            for (int i = startRow; i <= endRow && i < getRows(); i++) {
+//                for (int j = startCol; j <= endCol && j < getCols(); j++) {
+//                    board[i][j] = marker;
+//                }
+//            }
+//
+//            // Return the result (row, col)
+//            return new int[]{endRow, endCol};
+//        } else {
+//            // Handle invalid move
+//            System.out.println("Invalid move!");
+//            return new int[]{-1, -1}; // Invalid move indicator
+//        }
+//    }
 
-            // Place the domino on the board
-            for (int i = startRow; i <= endRow && i < getRows(); i++) {
-                for (int j = startCol; j <= endCol && j < getCols(); j++) {
-                    board[i][j] = marker;
-                }
-            }
-
-            // Return the result (row, col)
-            return new int[]{endRow, endCol};
-        } else {
-            // Handle invalid move
-            System.out.println("Invalid move!");
-            return new int[]{-1, -1}; // Invalid move indicator
-        }
-    }
-
-    /*
+    
     public void placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
         // Check if the move is valid before placing the domino
         if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
@@ -71,7 +71,7 @@ public class DomineeringPosition extends Position implements Cloneable {
             System.out.println("Invalid move!");
         }
     }
-     */
+     
     public boolean isValidMove(int startRow, int startCol, int endRow, int endCol, int orientation) {
         // Check if the move is within the bounds of the board
         if (startRow < 0 || startCol < 0 || endRow >= getRows() || endCol >= getCols()) {
