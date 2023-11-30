@@ -116,7 +116,7 @@ public class DomineeringGUI extends JFrame {
     private void computerMove(DomineeringPosition currentPosition) {
         System.out.print("computer move");
         Vector v = domineering.alphaBeta(0, currentPosition, !domineering.isComputerTurn());
-        System.out.print("\n VECTOR  \n " + v);
+      //  System.out.print("\n VECTOR  \n " + v);
 
         if (v.size() > 1) {
 //            Position p = (Position) v.elementAt(1);
