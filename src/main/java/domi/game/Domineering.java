@@ -8,37 +8,27 @@ import javax.swing.JButton;
 
 public class Domineering extends GameSearch {
 
-    // Define constants for the Domineering game
     public static final int EMPTY = 0;
     public static final int HORIZONTAL = 1;
     public static final int VERTICAL = 2;
     public boolean isComputerTurn = false; // computerTurn = 0;
     public DomineeringPosition currentPosition;
 
-    public int computerMoveRow;
-    public int computerMoveCol;
-
     public Domineering() {
-//        currentPosition = new DomineeringPosition(8, 8);
-
     }
 
-    
     @Override
     public boolean wonPosition(Position p, boolean player) {
-        // Implement the winning position check for Domineering
         DomineeringPosition pos = (DomineeringPosition) p;
         int marker = (player) ? HORIZONTAL : VERTICAL;
 
         for (int i = 0; i < pos.getRows(); i++) {
             for (int j = 0; j < pos.getCols(); j++) {
                 if (pos.getBoard()[i][j] == marker) {
-                    // Check if the placed domino creates a horizontal line
                     if (pos.isValidMove(i, j, i, j + 1, HORIZONTAL)) {
                         return true;
                     }
 
-                    // Check if the placed domino creates a vertical line
                     if (pos.isValidMove(i, j, i + 1, j, VERTICAL)) {
                         return true;
                     }
@@ -69,7 +59,6 @@ public class Domineering extends GameSearch {
     @Override
     public void printPosition(Position p) {
 
-        // Implement the printing of the Domineering board
         DomineeringPosition pos = (DomineeringPosition) p;
         int[][] board = pos.getBoard();
         for (int row = 0; row < pos.getRows(); row++) {
@@ -88,9 +77,8 @@ public class Domineering extends GameSearch {
     }
 
     @Override
-    public Position[] possibleMoves(Position p, boolean player) {    
+    public Position[] possibleMoves(Position p, boolean player) {
 
-        // Implement generating possible moves for Domineering
         DomineeringPosition pos = (DomineeringPosition) p;
         List<Position> moves = new ArrayList<>();
 
@@ -113,21 +101,7 @@ public class Domineering extends GameSearch {
 
         return moves.toArray(new Position[0]);
     }
-
-//    public int[] makeMoveComputer(Position p,int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
-//        isComputerTurn = !player;
-//        DomineeringPosition pos = (DomineeringPosition) p;
-//        DomineeringPosition newPos = new DomineeringPosition(pos);
-//
-//        // Make a move and get the result (row, col)
-//        int[] placedDominoResult = newPos.placeDomino(startRow, startCol, endRow, endCol, orientation, player);
-//
-//        // Update the current position
-//        currentPosition = new DomineeringPosition(newPos);
-//
-//        return placedDominoResult;
-//    }
-
+    
     @Override
     public Position makeMove(Position p, boolean player, Move move) {
 
@@ -141,8 +115,7 @@ public class Domineering extends GameSearch {
         return newPos;
     }
 
-    public boolean reachedMaxDepth(Position p, int depth) {     
-//        System.out.print("reachedMaxDepth");
+    public boolean reachedMaxDepth(Position p, int depth) {
 
         boolean ret = false;
         if (depth >= 3) {
@@ -161,7 +134,7 @@ public class Domineering extends GameSearch {
     }
 
     public boolean isComputerTurn() {
-        return isComputerTurn;  // computerTurn = true; 
+        return isComputerTurn; 
     }
 
     public void resetTurn() {
@@ -171,7 +144,6 @@ public class Domineering extends GameSearch {
     public Position getPosition() {
         return currentPosition;
     }
-    // In the Domineering class
 
     public int getRows() {
         return ((DomineeringPosition) getPosition()).getRows();
@@ -212,9 +184,9 @@ public class Domineering extends GameSearch {
     public static void main(String[] args) {
         DomineeringPosition p = new DomineeringPosition(8, 8);
         Domineering domineering = new Domineering();
-        domineering.currentPosition = p; // Set the initial position
+        domineering.currentPosition = p; 
 
-        domineering.isComputerTurn = false; // Initialize the flag at the beginning of the game
+        domineering.isComputerTurn = false; 
         domineering.playGame(p, true);
         domineering.resetTurn();
     }

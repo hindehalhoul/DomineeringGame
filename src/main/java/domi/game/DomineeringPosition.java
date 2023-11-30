@@ -6,10 +6,12 @@ public class DomineeringPosition extends Position implements Cloneable {
 
     int[][] board;
 
+    // Constructeur pour initialiser le plateau de jeu avec le nombre de lignes et de colonnes spécifié
     public DomineeringPosition(int rows, int cols) {
         board = new int[rows][cols];
     }
 
+    // Constructeur pour créer une nouvelle instance en copiant une position existante
     public DomineeringPosition(DomineeringPosition existingPosition) {
         int rows = existingPosition.getRows();
         int cols = existingPosition.getCols();
@@ -20,65 +22,42 @@ public class DomineeringPosition extends Position implements Cloneable {
         }
     }
 
+    // Méthode pour obtenir le plateau de jeu
     public int[][] getBoard() {
         return board;
     }
 
-    // Add the methods getRows and getCols
+    // Méthode pour obtenir le nombre de lignes du plateau de jeu
     public int getRows() {
         return board.length;
     }
 
+    // Méthode pour obtenir le nombre de colonnes du plateau de jeu
     public int getCols() {
         return board[0].length;
     }
 
-//    public int[] placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
-//        // Check if the move is valid before placing the domino
-//        if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
-//            int marker = (player) ? Domineering.HORIZONTAL : Domineering.VERTICAL;
-//
-//            // Place the domino on the board
-//            for (int i = startRow; i <= endRow && i < getRows(); i++) {
-//                for (int j = startCol; j <= endCol && j < getCols(); j++) {
-//                    board[i][j] = marker;
-//                }
-//            }
-//
-//            // Return the result (row, col)
-//            return new int[]{endRow, endCol};
-//        } else {
-//            // Handle invalid move
-//            System.out.println("Invalid move!");
-//            return new int[]{-1, -1}; // Invalid move indicator
-//        }
-//    }
-
-    
+    // Méthode pour placer un domino sur le plateau de jeu
     public void placeDomino(int startRow, int startCol, int endRow, int endCol, int orientation, boolean player) {
-        // Check if the move is valid before placing the domino
         if (isValidMove(startRow, startCol, endRow, endCol, orientation)) {
             int marker = (player) ? Domineering.HORIZONTAL : Domineering.VERTICAL;
 
-            // Place the domino on the board
             for (int i = startRow; i <= endRow && i < getRows(); i++) {
                 for (int j = startCol; j <= endCol && j < getCols(); j++) {
                     board[i][j] = marker;
                 }
             }
         } else {
-            // Handle invalid move
-            System.out.println("Invalid move!");
+            System.out.println("Mouvement invalide !");
         }
     }
-     
+
+    // Méthode pour vérifier la validité d'un mouvement
     public boolean isValidMove(int startRow, int startCol, int endRow, int endCol, int orientation) {
-        // Check if the move is within the bounds of the board
         if (startRow < 0 || startCol < 0 || endRow >= getRows() || endCol >= getCols()) {
             return false;
         }
 
-        // Check if the positions are empty
         for (int i = startRow; i <= endRow; i++) {
             for (int j = startCol; j <= endCol; j++) {
                 if (board[i][j] != Domineering.EMPTY) {
@@ -87,7 +66,6 @@ public class DomineeringPosition extends Position implements Cloneable {
             }
         }
 
-        // Check if the move is valid based on the orientation
         if (orientation == Domineering.HORIZONTAL && startRow == endRow && startCol + 1 == endCol) {
             return true;
         } else if (orientation == Domineering.VERTICAL && startRow + 1 == endRow && startCol == endCol) {
@@ -97,7 +75,7 @@ public class DomineeringPosition extends Position implements Cloneable {
         return false;
     }
 
-    // Implementation of the clone method
+    // Méthode pour cloner la position actuelle
     @Override
     public DomineeringPosition clone() {
         DomineeringPosition clonedPosition = new DomineeringPosition(getRows(), getCols());
@@ -109,6 +87,7 @@ public class DomineeringPosition extends Position implements Cloneable {
         return clonedPosition;
     }
 
+    // Méthode pour générer une représentation textuelle du plateau de jeu
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -124,6 +103,7 @@ public class DomineeringPosition extends Position implements Cloneable {
         return sb.toString();
     }
 
+    // Méthode pour comparer deux positions et déterminer leur égalité
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -134,13 +114,12 @@ public class DomineeringPosition extends Position implements Cloneable {
         }
         DomineeringPosition other = (DomineeringPosition) obj;
 
-        // Compare only the board configurations
         return Arrays.deepEquals(board, other.board);
     }
 
+    // Méthode pour générer un code de hachage basé sur le contenu du plateau de jeu
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
-
 }

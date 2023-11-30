@@ -3,29 +3,18 @@ package domi.game;
 import java.util.*;
 import javax.swing.JButton;
 
+// Classe abstraite représentant la recherche de jeu
 public abstract class GameSearch {
 
+    // Constantes pour le débogage et les joueurs
     public static final boolean DEBUG = false;
-
-    /*
-     * Note: the abstract Position also needs to be
-     *       subclassed to write a new game program.
-     */
- /*
-     * Note: the abstract class Move also needs to be subclassed.
-     *       
-     */
     public static boolean PROGRAM = false;
     public static boolean HUMAN = true;
 
-    /**
-     * Notes: PROGRAM false -1, HUMAN true 1
-     */
-
-    /*
-     * Abstract methods:
-     */
-//    public abstract boolean drawnPosition(Position p);
+    // Méthodes abstraites pour évaluer une position gagnante, évaluer une position,
+    // afficher une position, générer les mouvements possibles, effectuer un mouvement,
+    // déterminer si une profondeur maximale a été atteinte, créer un mouvement,
+    // et vérifier si le jeu est terminé par une égalité.
     public abstract boolean wonPosition(Position p, boolean player);
 
     public abstract float positionEvaluation(Position p, boolean player);
@@ -35,27 +24,25 @@ public abstract class GameSearch {
     public abstract Position[] possibleMoves(Position p, boolean player);
 
     public abstract Position makeMove(Position p, boolean player, Move move);
-    
-     
 
     public abstract boolean reachedMaxDepth(Position p, int depth);
 
     public abstract Move createMove();
 
-
-    /*
-     * Search utility methods:
-     */
+    // Algorithme Alpha-Bêta principal
     protected Vector alphaBeta(int depth, Position p, boolean player) {
         Vector v = alphaBetaHelper(depth, p, player, 1000000.0f, -1000000.0f);
         return v;
     }
 
+    // Fonction d'assistance pour l'algorithme Alpha-Bêta
     protected Vector alphaBetaHelper(int depth, Position p,
             boolean player, float alpha, float beta) {
         if (GameSearch.DEBUG) {
             System.out.println("alphaBetaHelper(" + depth + "," + p + "," + alpha + "," + beta + ")");
         }
+
+        // Si la profondeur maximale est atteinte, évalue la position et retourne le résultat
         if (reachedMaxDepth(p, depth)) {
             Vector v = new Vector(2);
             float value = positionEvaluation(p, player);
@@ -67,12 +54,17 @@ public abstract class GameSearch {
             }
             return v;
         }
+
         Vector best = new Vector();
         Position[] moves = possibleMoves(p, player);
+
+        // Parcourt les mouvements possibles
         for (int i = 0; i < moves.length; i++) {
+            // Appelle récursivement alphaBetaHelper pour les mouvements suivants
             Vector v2 = alphaBetaHelper(depth + 1, moves[i], !player, -beta, -alpha);
-            //  if (v2 == null || v2.size() < 1) continue;
             float value = -((Float) v2.elementAt(0)).floatValue();
+
+            // Met à jour les valeurs alpha et beta
             if (value > beta) {
                 if (GameSearch.DEBUG) {
                     System.out.println(" ! ! ! value=" + value + ", beta=" + beta);
@@ -81,7 +73,7 @@ public abstract class GameSearch {
                 best = new Vector();
                 best.addElement(moves[i]);
                 Enumeration enum2 = v2.elements();
-                enum2.nextElement(); // skip previous value
+                enum2.nextElement();
                 while (enum2.hasMoreElements()) {
                     Object o = enum2.nextElement();
                     if (o != null) {
@@ -89,10 +81,13 @@ public abstract class GameSearch {
                     }
                 }
             }
+            // Coupe si beta est plus grand ou égal à alpha
             if (beta >= alpha) {
                 break;
             }
         }
+
+        // Construit et retourne le vecteur résultant
         Vector v3 = new Vector();
         v3.addElement(new Float(beta));
         Enumeration enum2 = best.elements();
@@ -102,7 +97,9 @@ public abstract class GameSearch {
         return v3;
     }
 
+    // Méthode principale pour jouer au jeu
     public void playGame(Position startingPosition, boolean humanPlayFirst) {
+        // Si l'ordinateur commence, utilise Alpha-Bêta pour choisir le premier mouvement
         if (!humanPlayFirst) {
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
             if (v.size() > 1) {
@@ -113,9 +110,11 @@ public abstract class GameSearch {
             }
         }
 
+        // Boucle principale du jeu
         while (true) {
             printPosition(startingPosition);
 
+            // Vérifie si l'ordinateur ou l'humain a gagné
             if (wonPosition(startingPosition, PROGRAM)) {
                 System.out.println("Program won");
                 break;
@@ -126,41 +125,42 @@ public abstract class GameSearch {
                 break;
             }
 
+            // Demande à l'utilisateur de faire un mouvement
             System.out.print("\nYour move:");
-            // Check if there are available moves for the human player
             Position[] humanMoves = possibleMoves(startingPosition, HUMAN);
             if (humanMoves.length == 0) {
-                System.out.println("No more available moves for the human player. Game over.");
+                System.out.println("Computer won");
                 break;
             }
             Move move = createMove();
             startingPosition = makeMove(startingPosition, HUMAN, move);
             printPosition(startingPosition);
 
-            // Check if the game is over after the human move
+            // Vérifie si l'humain a gagné
             if (wonPosition(startingPosition, HUMAN)) {
                 System.out.println("Human won");
                 break;
             }
 
-            // Check if the game is drawn
+            // Vérifie si le jeu est terminé par une égalité
             if (isGameDrawn(startingPosition)) {
                 System.out.println("Drawn game");
                 break;
             }
 
+            // L'ordinateur choisit son mouvement en utilisant Alpha-Bêta
             System.out.print("\nComputer's move: \n");
             Vector v = alphaBeta(0, startingPosition, PROGRAM);
             if (v.size() > 1) {
                 startingPosition = (Position) v.elementAt(1);
-                //printPosition(startingPosition); // Print computer's move
             } else {
-                System.out.println("Drawn game");
+                System.out.println("Human won");
                 break;
             }
         }
     }
 
+    // Vérifie si le jeu est terminé par une égalité
     private boolean isGameDrawn(Position p) {
         Position[] computerMoves = possibleMoves(p, PROGRAM);
         Position[] humanMoves = possibleMoves(p, HUMAN);
